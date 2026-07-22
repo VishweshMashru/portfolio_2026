@@ -7,7 +7,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host") ?? "localhost:3000";
   const protocol = requestHeaders.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
   const base = new URL(`${protocol}://${host}`);
-  const socialImage = new URL("/og.png", base).toString();
+  const socialImage = new URL("/og-minimal.png", base).toString();
 
   return {
     metadataBase: base,
@@ -25,7 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
       type: "website",
       siteName: "Vishwesh Mashruwala",
       url: base,
-      images: [{ url: socialImage, width: 1731, height: 909, alt: "Vishwesh Mashruwala — code, circuits, mechanisms, motion" }],
+      images: [{ url: socialImage, width: 1536, height: 1024, alt: "Vishwesh Mashruwala — code, circuits, mechanisms, motion" }],
     },
     twitter: {
       card: "summary_large_image",
