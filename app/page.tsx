@@ -4,7 +4,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 const pages = ["Index", "Practice", "About", "Contact"];
 const hashes = ["intro", "practice", "about", "contact"];
-const disciplines = ["Software", "Hardware", "Mechanisms", "Visual craft", "中文"];
+
+const disciplines = [
+  ["Software", "Web products and small systems."],
+  ["Hardware", "Circuits, sensors, and physical computing."],
+  ["Mechanisms", "Motion, materials, and how parts interact."],
+  ["Visual craft", "Drawing, editing, and composition."],
+  ["Mandarin", "A language I am learning every day."],
+];
 
 export default function Home() {
   const [page, setPage] = useState(0);
@@ -54,122 +61,91 @@ export default function Home() {
       <div className="aura aura-two" aria-hidden="true" />
 
       <div className="artboard">
-        <div className="construction-grid" aria-hidden="true" />
-
         <header className="site-header">
           <button className="brand" type="button" onClick={() => goTo(0)} aria-label="Go to introduction">
-            <strong>VISHWESH</strong>
-            <span>MASHRUWALA / 23</span>
+            Vishwesh Mashruwala
           </button>
 
           <nav className="nav" aria-label="Portfolio pages">
             {pages.map((label, index) => (
               <button type="button" key={label} onClick={() => goTo(index)} aria-current={page === index ? "page" : undefined}>
-                <span>0{index}</span>{label}
+                {label}
               </button>
             ))}
           </nav>
 
-          <p className="availability"><span aria-hidden="true" />Open to work</p>
+          <p className="availability"><span aria-hidden="true" />Available</p>
         </header>
 
         <main className="page-stage" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
           <section key={page} className={`page-view enter-${direction}`} aria-live="polite" aria-label={`${pages[page]} page`}>
             {page === 0 && (
-              <div className="intro-page">
-                <div className="intro-context meta-type">
-                  <p><span>Practice</span>Code, circuits, motion, image.</p>
-                  <p><span>Based</span>India · IST</p>
+              <div className="intro-page page-padding">
+                <div className="intro-meta">
+                  <p>Independent software engineer</p>
+                  <p>India · 23</p>
                 </div>
 
                 <div className="hero-object" aria-hidden="true">
                   <img src="/hero-vm-glass.png" alt="" />
                 </div>
 
-                <div className="intro-nameplate">
-                  <p>INDEPENDENT ENGINEER</p>
-                  <p>SOFTWARE × HARDWARE</p>
+                <div className="intro-copy">
+                  <h1>Software, hardware<br /><span>&amp; everything between.</span></h1>
+                  <p>I like following ideas through code, circuits, mechanisms, drawings, and edits.</p>
+                  <button type="button" onClick={() => goTo(1)}>Explore my practice <span aria-hidden="true">→</span></button>
                 </div>
-
-                <h1 className="hero-title">
-                  <span>I BUILD</span>
-                  <span>DIGITAL <em>&amp;</em> PHYSICAL</span>
-                  <span>THINGS.</span>
-                </h1>
-
-                <button className="round-next" type="button" onClick={() => goTo(1)} aria-label="View practice">
-                  <span>VIEW<br />PRACTICE</span><b aria-hidden="true">↘</b>
-                </button>
               </div>
             )}
 
             {page === 1 && (
-              <div className="practice-page">
-                <div className="page-label meta-type">
-                  <p>01 / PRACTICE</p>
-                  <p>FIVE CONNECTED FIELDS</p>
+              <div className="practice-page page-padding">
+                <div className="page-heading">
+                  <p className="eyebrow">Practice</p>
+                  <h2>Ideas rarely stay<br />in one medium.</h2>
+                  <p className="page-intro">My work moves between digital and physical systems, with visual thinking connecting both.</p>
                 </div>
 
-                <div className="optical-study" aria-hidden="true"><span /></div>
-
-                <h2 className="thin-title">
-                  <span>ENGINEERING</span>
-                  <span>ACROSS</span>
-                  <span>MEDIUMS.</span>
-                </h2>
-
-                <div className="discipline-rail" aria-label="Areas of practice">
-                  {disciplines.map((discipline, index) => (
-                    <p key={discipline}><span>0{index + 1}</span>{discipline}</p>
+                <div className="discipline-list" aria-label="Areas of practice">
+                  {disciplines.map(([title, description], index) => (
+                    <article key={title}>
+                      <span>{String(index + 1).padStart(2, "0")}</span>
+                      <h3>{title}</h3>
+                      <p>{description}</p>
+                    </article>
                   ))}
                 </div>
               </div>
             )}
 
             {page === 2 && (
-              <div className="about-page">
-                <div className="page-label meta-type">
-                  <p>02 / ABOUT</p>
-                  <p>NO SINGLE DISCIPLINE</p>
+              <div className="about-page page-padding">
+                <div className="page-heading">
+                  <p className="eyebrow">About</p>
+                  <h2>Curiosity is the<br />common thread.</h2>
                 </div>
 
-                <h2 className="heavy-title">
-                  <span>CURIOUS</span>
-                  <span>BY</span>
-                  <span>DEFAULT.</span>
-                </h2>
-
-                <article className="about-card">
-                  <p className="card-number">23 / INDIA</p>
-                  <p>I&apos;m an independent software engineer who follows ideas into hardware, mechanical and electrical systems, drawing, editing, and Mandarin.</p>
-                </article>
-
-                <div className="learning-loop" aria-label="Working process: question, make, revise">
-                  <span>QUESTION</span><i aria-hidden="true">→</i><span>MAKE</span><i aria-hidden="true">→</i><span>REVISE</span>
+                <div className="about-copy">
+                  <p>I&apos;m a 23-year-old independent software engineer based in India. I&apos;m interested in hardware, mechanical and electrical engineering, drawing, video editing, creative processes, and Mandarin.</p>
+                  <p>I learn best when an idea becomes something I can test, change, and understand with my hands.</p>
+                  <div className="principles" aria-label="Working principles">
+                    <span>Stay curious</span>
+                    <span>Make it tangible</span>
+                    <span>Keep learning</span>
+                  </div>
                 </div>
               </div>
             )}
 
             {page === 3 && (
-              <div className="contact-page">
-                <div className="page-label meta-type">
-                  <p>03 / CONTACT</p>
-                  <p>AVAILABLE FOR INTERESTING WORK</p>
-                </div>
-
-                <h2 className="contact-title">
-                  <span>LET&apos;S BUILD</span>
-                  <span>SOMETHING</span>
-                  <span>REAL.</span>
-                </h2>
-
-                <div className="chrome-orb" aria-hidden="true"><span>VM</span></div>
-
-                <article className="contact-card">
-                  <p>Software roles, unusual collaborations, and thoughtful conversations.</p>
+              <div className="contact-page page-padding">
+                <p className="eyebrow">Contact</p>
+                <h2>Open to<br />interesting work.</h2>
+                <div className="contact-copy">
+                  <p>Software roles, unusual collaborations, and thoughtful conversations are all welcome.</p>
                   <p>Reach out through the channel that brought you here.</p>
-                  <button type="button" onClick={() => goTo(0)}>BACK TO INDEX <span aria-hidden="true">↖</span></button>
-                </article>
+                  <button type="button" onClick={() => goTo(0)}>Back to index <span aria-hidden="true">↖</span></button>
+                </div>
               </div>
             )}
           </section>
