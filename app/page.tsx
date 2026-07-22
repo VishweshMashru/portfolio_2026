@@ -92,8 +92,10 @@ export default function Home() {
 
                 <div className="intro-copy">
                   <h1>Software, hardware<br /><span>&amp; everything between.</span></h1>
-                  <p>I like following ideas through code, circuits, mechanisms, drawings, and edits.</p>
-                  <button type="button" onClick={() => goTo(1)}>Explore my practice <span aria-hidden="true">→</span></button>
+                  <div className="intro-detail">
+                    <p>I like following ideas through code, circuits, mechanisms, drawings, and edits.</p>
+                    <button type="button" onClick={() => goTo(1)}>Explore my practice <span aria-hidden="true">→</span></button>
+                  </div>
                 </div>
               </div>
             )}
