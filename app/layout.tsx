@@ -19,25 +19,25 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     metadataBase: base,
     title: {
-      default: "Vishwesh Mashruwala — Independent Maker",
+      default: "Vishwesh Mashruwala — Portfolio",
       template: "%s — Vishwesh Mashruwala",
     },
-    description: "Vishwesh Mashruwala builds software to understand ideas, while learning through hardware, mechanisms, visual craft, and Mandarin.",
+    description: "Portfolio of Vishwesh Mashruwala, a self-employed software developer in India with interests in hardware, mechanics, visual work, and Mandarin.",
     applicationName: "Vishwesh Mashruwala",
     authors: [{ name: "Vishwesh Mashruwala" }],
-    keywords: ["Vishwesh Mashruwala", "software engineer", "hardware", "creative technologist", "portfolio"],
+    keywords: ["Vishwesh Mashruwala", "software developer", "hardware", "mechanical engineering", "video editing", "portfolio"],
     openGraph: {
-      title: "Vishwesh Mashruwala — Independent Maker",
-      description: "Software is where Vishwesh builds today. Hardware, mechanisms, and visual craft expand how he tests and explains ideas.",
+      title: "Vishwesh Mashruwala — Portfolio",
+      description: "Software is Vishwesh's main area, alongside ongoing interests in hardware, mechanics, visual work, and Mandarin.",
       type: "website",
       siteName: "Vishwesh Mashruwala",
       url: base,
-      images: [{ url: socialImage, width: 1536, height: 1024, alt: "Vishwesh Mashruwala — code, circuits, mechanisms, motion" }],
+      images: [{ url: socialImage, width: 1536, height: 1024, alt: "Vishwesh Mashruwala portfolio" }],
     },
     twitter: {
       card: "summary_large_image",
-      title: "Vishwesh Mashruwala — Independent Maker",
-      description: "Software is where Vishwesh builds today. Hardware, mechanisms, and visual craft expand how he tests and explains ideas.",
+      title: "Vishwesh Mashruwala — Portfolio",
+      description: "Software is Vishwesh's main area, alongside ongoing interests in hardware, mechanics, visual work, and Mandarin.",
       images: [socialImage],
     },
   };

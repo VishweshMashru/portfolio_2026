@@ -6,11 +6,11 @@ const pages = ["Index", "Practice", "About", "Contact"];
 const hashes = ["intro", "practice", "about", "contact"];
 
 const disciplines = [
-  ["Software", "Interfaces, web products, automations, and small tools."],
-  ["Hardware", "Learning through circuits, sensors, and physical prototypes."],
-  ["Mechanisms", "Questions about motion, materials, tolerances, and failure."],
-  ["Visual craft", "Drawing to think; editing to shape rhythm and explanation."],
-  ["Mandarin", "Building vocabulary, listening, reading, and tone awareness."],
+  { title: "Software", status: "Main", description: "Web interfaces and small software tools." },
+  { title: "Hardware", status: "Learning", description: "Electronics, circuits, sensors, and physical computing." },
+  { title: "Mechanics", status: "Learning", description: "Motion, mechanisms, materials, and fabrication." },
+  { title: "Visual work", status: "Practice", description: "Drawing, video editing, pacing, and composition." },
+  { title: "Mandarin", status: "Learning", description: "Vocabulary, listening, pronunciation, and reading." },
 ];
 
 export default function Home() {
@@ -58,6 +58,20 @@ export default function Home() {
     touchStart.current = null;
   };
 
+  const onPointerMove = (event: React.PointerEvent<HTMLElement>) => {
+    if (event.pointerType === "touch") return;
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const x = ((event.clientX - bounds.left) / bounds.width - 0.5) * 2;
+    const y = ((event.clientY - bounds.top) / bounds.height - 0.5) * 2;
+    event.currentTarget.style.setProperty("--pointer-x", x.toFixed(3));
+    event.currentTarget.style.setProperty("--pointer-y", y.toFixed(3));
+  };
+
+  const onPointerLeave = (event: React.PointerEvent<HTMLElement>) => {
+    event.currentTarget.style.setProperty("--pointer-x", "0");
+    event.currentTarget.style.setProperty("--pointer-y", "0");
+  };
+
   return (
     <div className={`portfolio theme-${page}`}>
       <div className="aura aura-one" aria-hidden="true" />
@@ -77,25 +91,31 @@ export default function Home() {
             ))}
           </nav>
 
-          <p className="availability"><span aria-hidden="true" />Available</p>
+          <p className="availability"><span aria-hidden="true" />Open to software work</p>
         </header>
 
-        <main className="page-stage" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+        <main
+          className="page-stage"
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
+          onPointerMove={onPointerMove}
+          onPointerLeave={onPointerLeave}
+        >
           <section key={page} className={`page-view enter-${direction}`} aria-live="polite" aria-label={`${pages[page]} page`}>
             {page === 0 && (
               <div className="intro-page page-padding">
                 <div className="intro-meta">
-                  <p>Software engineer · multidisciplinary learner</p>
+                  <p>Software · self-employed</p>
                   <p>India · 23</p>
                 </div>
 
                 <div className="hero-object" aria-hidden="true" />
 
                 <div className="intro-copy">
-                  <h1>I build to<br /><span>understand.</span></h1>
+                  <h1>Software. Hardware.<br /><span>Mechanics. Visuals.</span></h1>
                   <div className="intro-detail">
-                    <p>Software is where I build today. Hardware, mechanisms, drawing, editing, and Mandarin keep expanding how I think.</p>
-                    <button type="button" onClick={() => goTo(1)}>See how I learn <span aria-hidden="true">→</span></button>
+                    <p>I&apos;m Vishwesh, 23, based in India. Software is my main area; the rest are subjects I&apos;m actively learning or practising.</p>
+                    <button type="button" onClick={() => goTo(1)}>View areas <span aria-hidden="true">→</span></button>
                   </div>
                 </div>
               </div>
@@ -105,15 +125,15 @@ export default function Home() {
               <div className="practice-page page-padding">
                 <div className="page-heading">
                   <p className="eyebrow">Practice</p>
-                  <h2>One question.<br />Many ways to test it.</h2>
-                  <p className="page-intro">I choose the medium that gives useful feedback: code for behavior, circuits for sensing, mechanisms for motion, and visual work for explanation.</p>
+                  <h2>Current<br />areas.</h2>
+                  <p className="page-intro">These are not equal claims of experience. Software is the main area; the others are interests or ongoing studies.</p>
                 </div>
 
                 <div className="discipline-list" aria-label="Areas of practice">
-                  {disciplines.map(([title, description], index) => (
+                  {disciplines.map(({ title, status, description }) => (
                     <article key={title}>
-                      <span>{String(index + 1).padStart(2, "0")}</span>
                       <h3>{title}</h3>
+                      <span>{status}</span>
                       <p>{description}</p>
                     </article>
                   ))}
@@ -125,17 +145,17 @@ export default function Home() {
               <div className="about-page page-padding">
                 <div className="page-heading">
                   <p className="eyebrow">About</p>
-                  <h2>Not five careers.<br />One way of learning.</h2>
+                  <h2>A short<br />background.</h2>
                 </div>
 
                 <div className="about-copy">
-                  <p>I&apos;m 23 and based in India. Software is the medium I can build with now; hardware, mechanical and electrical engineering are the directions I keep moving toward.</p>
-                  <p>I don&apos;t pretend these are five finished careers. They are connected ways to investigate a question: model it, prototype it, notice where it fails, and make the next version clearer.</p>
-                  <div className="principles" aria-label="Working principles">
-                    <span>Build before claiming</span>
-                    <span>Follow the failure</span>
-                    <span>Explain the result</span>
-                  </div>
+                  <p>I currently work independently and am looking for a software role or contract work. My experience is strongest in software.</p>
+                  <p>Hardware, mechanical engineering, and electrical engineering are subjects I&apos;m learning—not claims of expertise. I also draw, edit video, and study Mandarin.</p>
+                  <dl className="about-facts">
+                    <div><dt>Status</dt><dd>Self-employed</dd></div>
+                    <div><dt>Based</dt><dd>India</dd></div>
+                    <div><dt>Age</dt><dd>23</dd></div>
+                  </dl>
                 </div>
               </div>
             )}
@@ -143,9 +163,9 @@ export default function Home() {
             {page === 3 && (
               <div className="contact-page page-padding">
                 <p className="eyebrow">Contact</p>
-                <h2>Looking for work<br />I can grow into.</h2>
+                <h2>Available for<br />software work.</h2>
                 <div className="contact-copy">
-                  <p>I&apos;m looking for software roles, contract work, and small collaborations where I can contribute now, learn quickly, and stay close to the problem.</p>
+                  <p>I&apos;m open to full-time software roles, contract work, and small collaborations. Email is best; phone and WhatsApp work too.</p>
                   <div className="contact-methods">
                     <a href="mailto:vishweshmash86@gmail.com">
                       <span>Email</span>
@@ -159,7 +179,7 @@ export default function Home() {
                     </a>
                     <a href="https://wa.me/919537517519" target="_blank" rel="noreferrer">
                       <span>WhatsApp</span>
-                      <strong>Start a conversation</strong>
+                      <strong>Open WhatsApp</strong>
                       <b aria-hidden="true">↗</b>
                     </a>
                   </div>
