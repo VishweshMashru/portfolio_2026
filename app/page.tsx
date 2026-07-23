@@ -1,17 +1,16 @@
 "use client";
 
-import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 const pages = ["Index", "Practice", "About", "Contact"];
 const hashes = ["intro", "practice", "about", "contact"];
 
 const disciplines = [
-  ["Software", "Web products and small systems."],
-  ["Hardware", "Circuits, sensors, and physical computing."],
-  ["Mechanisms", "Motion, materials, and how parts interact."],
-  ["Visual craft", "Drawing, editing, and composition."],
-  ["Mandarin", "A language I am learning every day."],
+  ["Software", "Interfaces, web products, automations, and small tools."],
+  ["Hardware", "Learning through circuits, sensors, and physical prototypes."],
+  ["Mechanisms", "Questions about motion, materials, tolerances, and failure."],
+  ["Visual craft", "Drawing to think; editing to shape rhythm and explanation."],
+  ["Mandarin", "Building vocabulary, listening, reading, and tone awareness."],
 ];
 
 export default function Home() {
@@ -86,26 +85,17 @@ export default function Home() {
             {page === 0 && (
               <div className="intro-page page-padding">
                 <div className="intro-meta">
-                  <p>Independent software engineer</p>
+                  <p>Software engineer · multidisciplinary learner</p>
                   <p>India · 23</p>
                 </div>
 
-                <div className="hero-object" aria-hidden="true">
-                  <Image
-                    src="/hero-vm-glass.png"
-                    alt=""
-                    fill
-                    priority
-                    sizes="100vw"
-                    unoptimized
-                  />
-                </div>
+                <div className="hero-object" aria-hidden="true" />
 
                 <div className="intro-copy">
-                  <h1>Software, hardware<br /><span>&amp; everything between.</span></h1>
+                  <h1>I build to<br /><span>understand.</span></h1>
                   <div className="intro-detail">
-                    <p>I like following ideas through code, circuits, mechanisms, drawings, and edits.</p>
-                    <button type="button" onClick={() => goTo(1)}>Explore my practice <span aria-hidden="true">→</span></button>
+                    <p>Software is where I build today. Hardware, mechanisms, drawing, editing, and Mandarin keep expanding how I think.</p>
+                    <button type="button" onClick={() => goTo(1)}>See how I learn <span aria-hidden="true">→</span></button>
                   </div>
                 </div>
               </div>
@@ -115,8 +105,8 @@ export default function Home() {
               <div className="practice-page page-padding">
                 <div className="page-heading">
                   <p className="eyebrow">Practice</p>
-                  <h2>Ideas rarely stay<br />in one medium.</h2>
-                  <p className="page-intro">My work moves between digital and physical systems, with visual thinking connecting both.</p>
+                  <h2>One question.<br />Many ways to test it.</h2>
+                  <p className="page-intro">I choose the medium that gives useful feedback: code for behavior, circuits for sensing, mechanisms for motion, and visual work for explanation.</p>
                 </div>
 
                 <div className="discipline-list" aria-label="Areas of practice">
@@ -135,16 +125,16 @@ export default function Home() {
               <div className="about-page page-padding">
                 <div className="page-heading">
                   <p className="eyebrow">About</p>
-                  <h2>Curiosity is the<br />common thread.</h2>
+                  <h2>Not five careers.<br />One way of learning.</h2>
                 </div>
 
                 <div className="about-copy">
-                  <p>I&apos;m a 23-year-old independent software engineer based in India. I&apos;m interested in hardware, mechanical and electrical engineering, drawing, video editing, creative processes, and Mandarin.</p>
-                  <p>I learn best when an idea becomes something I can test, change, and understand with my hands.</p>
+                  <p>I&apos;m 23 and based in India. Software is the medium I can build with now; hardware, mechanical and electrical engineering are the directions I keep moving toward.</p>
+                  <p>I don&apos;t pretend these are five finished careers. They are connected ways to investigate a question: model it, prototype it, notice where it fails, and make the next version clearer.</p>
                   <div className="principles" aria-label="Working principles">
-                    <span>Stay curious</span>
-                    <span>Make it tangible</span>
-                    <span>Keep learning</span>
+                    <span>Build before claiming</span>
+                    <span>Follow the failure</span>
+                    <span>Explain the result</span>
                   </div>
                 </div>
               </div>
@@ -153,9 +143,9 @@ export default function Home() {
             {page === 3 && (
               <div className="contact-page page-padding">
                 <p className="eyebrow">Contact</p>
-                <h2>Open to<br />interesting work.</h2>
+                <h2>Looking for work<br />I can grow into.</h2>
                 <div className="contact-copy">
-                  <p>Software roles, unusual collaborations, and thoughtful conversations are all welcome.</p>
+                  <p>I&apos;m looking for software roles, contract work, and small collaborations where I can contribute now, learn quickly, and stay close to the problem.</p>
                   <div className="contact-methods">
                     <a href="mailto:vishweshmash86@gmail.com">
                       <span>Email</span>

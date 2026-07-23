@@ -22,13 +22,13 @@ export async function generateMetadata(): Promise<Metadata> {
       default: "Vishwesh Mashruwala — Independent Maker",
       template: "%s — Vishwesh Mashruwala",
     },
-    description: "The multidisciplinary practice of Vishwesh Mashruwala: software, hardware, mechanisms, visuals, and learning in public.",
+    description: "Vishwesh Mashruwala builds software to understand ideas, while learning through hardware, mechanisms, visual craft, and Mandarin.",
     applicationName: "Vishwesh Mashruwala",
     authors: [{ name: "Vishwesh Mashruwala" }],
     keywords: ["Vishwesh Mashruwala", "software engineer", "hardware", "creative technologist", "portfolio"],
     openGraph: {
       title: "Vishwesh Mashruwala — Independent Maker",
-      description: "Code, circuits, mechanisms, motion — and the curiosity connecting them.",
+      description: "Software is where Vishwesh builds today. Hardware, mechanisms, and visual craft expand how he tests and explains ideas.",
       type: "website",
       siteName: "Vishwesh Mashruwala",
       url: base,
@@ -37,7 +37,7 @@ export async function generateMetadata(): Promise<Metadata> {
     twitter: {
       card: "summary_large_image",
       title: "Vishwesh Mashruwala — Independent Maker",
-      description: "Code, circuits, mechanisms, motion — and the curiosity connecting them.",
+      description: "Software is where Vishwesh builds today. Hardware, mechanisms, and visual craft expand how he tests and explains ideas.",
       images: [socialImage],
     },
   };

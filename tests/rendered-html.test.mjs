@@ -12,7 +12,8 @@ test("builds the Next.js portfolio", async () => {
   assert.ok(buildId.trim());
   assert.match(layout, /Vishwesh Mashruwala — Independent Maker/);
   assert.match(page, /Vishwesh Mashruwala/);
-  assert.match(page, /Software, hardware/);
+  assert.match(page, /I build to/);
+  assert.match(page, /Build before claiming/);
   assert.doesNotMatch(`${layout}\n${page}`, /\b(?:starter|drizzle|database)\b/i);
 });
 
