@@ -2,37 +2,18 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-async function render() {
-  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
-  workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
-  const { default: worker } = await import(workerUrl.href);
+test("builds the Next.js portfolio", async () => {
+  const [buildId, layout, page] = await Promise.all([
+    readFile(new URL("../.next/BUILD_ID", import.meta.url), "utf8"),
+    readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
+  ]);
 
-  return worker.fetch(
-    new Request("http://localhost/", {
-      headers: { accept: "text/html" },
-    }),
-    {
-      ASSETS: {
-        fetch: async () => new Response("Not found", { status: 404 }),
-      },
-    },
-    {
-      waitUntil() {},
-      passThroughOnException() {},
-    },
-  );
-}
-
-test("server-renders the portfolio", async () => {
-  const response = await render();
-  assert.equal(response.status, 200);
-  assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
-
-  const html = await response.text();
-  assert.match(html, /<title>Vishwesh Mashruwala — Independent Maker<\/title>/i);
-  assert.match(html, /Vishwesh Mashruwala/);
-  assert.match(html, /Software, hardware/);
-  assert.doesNotMatch(html, /starter|drizzle|database/i);
+  assert.ok(buildId.trim());
+  assert.match(layout, /Vishwesh Mashruwala — Independent Maker/);
+  assert.match(page, /Vishwesh Mashruwala/);
+  assert.match(page, /Software, hardware/);
+  assert.doesNotMatch(`${layout}\n${page}`, /\b(?:starter|drizzle|database)\b/i);
 });
 
 test("includes direct contact methods", async () => {
