@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 const pages = ["Index", "Practice", "About", "Contact"];
@@ -30,7 +31,10 @@ export default function Home() {
 
   useEffect(() => {
     const hashIndex = hashes.indexOf(window.location.hash.slice(1));
-    if (hashIndex > -1) setPage(hashIndex);
+    if (hashIndex < 0) return;
+
+    const frame = window.requestAnimationFrame(() => setPage(hashIndex));
+    return () => window.cancelAnimationFrame(frame);
   }, []);
 
   useEffect(() => {
@@ -87,7 +91,14 @@ export default function Home() {
                 </div>
 
                 <div className="hero-object" aria-hidden="true">
-                  <img src="/hero-vm-glass.png" alt="" />
+                  <Image
+                    src="/hero-vm-glass.png"
+                    alt=""
+                    fill
+                    priority
+                    sizes="100vw"
+                    unoptimized
+                  />
                 </div>
 
                 <div className="intro-copy">
