@@ -145,8 +145,23 @@ export default function Home() {
                 <h2>Open to<br />interesting work.</h2>
                 <div className="contact-copy">
                   <p>Software roles, unusual collaborations, and thoughtful conversations are all welcome.</p>
-                  <p>Reach out through the channel that brought you here.</p>
-                  <button type="button" onClick={() => goTo(0)}>Back to index <span aria-hidden="true">↖</span></button>
+                  <div className="contact-methods">
+                    <a href="mailto:vishweshmash86@gmail.com">
+                      <span>Email</span>
+                      <strong>vishweshmash86@gmail.com</strong>
+                      <b aria-hidden="true">↗</b>
+                    </a>
+                    <a href="tel:+919537517519">
+                      <span>Phone</span>
+                      <strong>+91 95375 17519</strong>
+                      <b aria-hidden="true">↗</b>
+                    </a>
+                    <a href="https://wa.me/919537517519" target="_blank" rel="noreferrer">
+                      <span>WhatsApp</span>
+                      <strong>Start a conversation</strong>
+                      <b aria-hidden="true">↗</b>
+                    </a>
+                  </div>
                 </div>
               </div>
             )}

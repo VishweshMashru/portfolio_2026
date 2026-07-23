@@ -19,6 +19,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 button { color: inherit; font: inherit; }
+a { color: inherit; }
 button:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
 ::selection { background: rgba(36, 121, 206, .22); }
 
@@ -65,7 +66,7 @@ button:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
   align-items: center;
   padding-inline: clamp(22px, 3.2vw, 64px);
 }
-.brand, .nav button, .availability, .pagination button, .intro-copy button, .contact-copy button { border: 0; background: transparent; }
+.brand, .nav button, .availability, .pagination button, .intro-copy button { border: 0; background: transparent; }
 .brand { width: max-content; padding: 0; cursor: pointer; font-size: clamp(13px, .95vw, 16px); font-weight: 650; letter-spacing: -.025em; }
 .nav { display: flex; align-items: center; gap: clamp(20px, 3vw, 48px); }
 .nav button { padding: 8px 0; position: relative; cursor: pointer; color: var(--muted); font-size: clamp(11px, .76vw, 13px); font-weight: 500; }
@@ -117,8 +118,8 @@ button:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
 .intro-copy h1 span { color: #2a73b6; }
 .intro-detail { padding-bottom: .35em; }
 .intro-detail p { margin: 0; color: #42565f; font-size: clamp(12px, .95vw, 15px); line-height: 1.55; }
-.intro-copy button, .contact-copy button { margin: 20px 0 0; padding: 0; display: block; cursor: pointer; color: var(--ink); font-size: clamp(10px, .72vw, 12px); font-weight: 600; }
-.intro-copy button span, .contact-copy button span { display: inline-block; margin-left: 9px; transition: transform .18s ease; }
+.intro-copy button { margin: 20px 0 0; padding: 0; display: block; cursor: pointer; color: var(--ink); font-size: clamp(10px, .72vw, 12px); font-weight: 600; }
+.intro-copy button span { display: inline-block; margin-left: 9px; transition: transform .18s ease; }
 .intro-copy button:hover span { transform: translateX(4px); }
 
 .practice-page, .about-page { display: grid; grid-template-columns: minmax(0, .95fr) minmax(340px, 1.05fr); gap: clamp(54px, 8vw, 130px); align-items: center; }
@@ -147,9 +148,23 @@ button:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
 .contact-page { display: grid; grid-template-columns: 1.05fr .75fr; grid-template-rows: auto 1fr; column-gap: clamp(54px, 8vw, 130px); align-items: center; }
 .contact-page > .eyebrow { grid-column: 1 / -1; align-self: start; }
 .contact-page h2 { align-self: center; font-size: clamp(62px, 7.2vw, 132px); color: #edf5f5; }
-.contact-copy { max-width: 430px; align-self: end; margin-bottom: clamp(20px, 6vh, 72px); }
-.contact-copy p { margin: 0 0 16px; color: var(--muted); font-size: clamp(13px, 1vw, 16px); line-height: 1.55; }
-.contact-copy button { margin-left: 0; color: #edf5f5; }
+.contact-copy { width: 100%; max-width: 560px; align-self: center; }
+.contact-copy > p { max-width: 430px; margin: 0 0 clamp(24px, 4vh, 40px); color: var(--muted); font-size: clamp(13px, 1vw, 16px); line-height: 1.55; }
+.contact-methods { width: 100%; }
+.contact-methods a {
+  min-height: clamp(58px, 7vh, 72px);
+  display: grid;
+  grid-template-columns: 82px minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: center;
+  border-bottom: 1px solid rgba(237, 245, 245, .18);
+  text-decoration: none;
+}
+.contact-methods a:first-child { border-top: 1px solid rgba(237, 245, 245, .18); }
+.contact-methods span { color: var(--muted); font-size: clamp(9px, .68vw, 11px); font-weight: 600; }
+.contact-methods strong { min-width: 0; overflow-wrap: anywhere; font-size: clamp(14px, 1.2vw, 19px); font-weight: 520; letter-spacing: -.025em; }
+.contact-methods b { font-size: 14px; font-weight: 500; transition: transform .18s ease, color .18s ease; }
+.contact-methods a:hover b { color: #73dce8; transform: translate(3px, -3px); }
 
 .pagination { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding-inline: clamp(22px, 3.2vw, 64px); color: var(--muted); font-size: clamp(9px, .66vw, 11px); }
 .pagination > p { margin: 0; }
@@ -204,9 +219,12 @@ button:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
   .principles span { padding: 6px 9px; font-size: 8px; }
   .contact-page { display: grid; grid-template-columns: 1fr; grid-template-rows: auto 1fr auto; }
   .contact-page h2 { align-self: center; font-size: clamp(54px, 16vw, 78px); }
-  .contact-copy { margin-bottom: 0; }
-  .contact-copy p { margin-bottom: 8px; font-size: 10px; }
-  .contact-copy button { margin-top: 10px; font-size: 9px; }
+  .contact-page h2 { font-size: clamp(48px, 14vw, 68px); }
+  .contact-copy > p { margin-bottom: 12px; font-size: 9px; }
+  .contact-methods a { min-height: 43px; grid-template-columns: 54px minmax(0, 1fr) auto; gap: 8px; }
+  .contact-methods span { font-size: 7px; }
+  .contact-methods strong { font-size: 10px; }
+  .contact-methods b { font-size: 11px; }
   .pagination { font-size: 8px; }
   .page-dots { gap: 8px; }
   .page-dots button { width: 7px; height: 7px; }
