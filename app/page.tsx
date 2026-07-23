@@ -58,20 +58,6 @@ export default function Home() {
     touchStart.current = null;
   };
 
-  const onPointerMove = (event: React.PointerEvent<HTMLElement>) => {
-    if (event.pointerType === "touch") return;
-    const bounds = event.currentTarget.getBoundingClientRect();
-    const x = ((event.clientX - bounds.left) / bounds.width - 0.5) * 2;
-    const y = ((event.clientY - bounds.top) / bounds.height - 0.5) * 2;
-    event.currentTarget.style.setProperty("--pointer-x", x.toFixed(3));
-    event.currentTarget.style.setProperty("--pointer-y", y.toFixed(3));
-  };
-
-  const onPointerLeave = (event: React.PointerEvent<HTMLElement>) => {
-    event.currentTarget.style.setProperty("--pointer-x", "0");
-    event.currentTarget.style.setProperty("--pointer-y", "0");
-  };
-
   return (
     <div className={`portfolio theme-${page}`}>
       <div className="aura aura-one" aria-hidden="true" />
@@ -98,8 +84,6 @@ export default function Home() {
           className="page-stage"
           onTouchStart={onTouchStart}
           onTouchEnd={onTouchEnd}
-          onPointerMove={onPointerMove}
-          onPointerLeave={onPointerLeave}
         >
           <section key={page} className={`page-view enter-${direction}`} aria-live="polite" aria-label={`${pages[page]} page`}>
             {page === 0 && (

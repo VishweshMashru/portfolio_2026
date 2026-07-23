@@ -77,8 +77,6 @@ button:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
 .availability span { width: 6px; height: 6px; border-radius: 50%; background: #45cc73; box-shadow: 0 0 0 4px rgba(69, 204, 115, .1); }
 
 .page-stage {
-  --pointer-x: 0;
-  --pointer-y: 0;
   min-height: 0;
   overflow: hidden;
   touch-action: pan-y;
@@ -153,20 +151,8 @@ button:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
   animation: light-scan 9s ease-in-out infinite;
 }
 @keyframes object-float {
-  0%, 100% {
-    transform: translate3d(
-      calc(var(--pointer-x) * -8px),
-      calc(var(--pointer-y) * -5px),
-      0
-    ) scale(1.008);
-  }
-  50% {
-    transform: translate3d(
-      calc(var(--pointer-x) * -8px),
-      calc(var(--pointer-y) * -5px - 7px),
-      0
-    ) scale(1.016);
-  }
+  0%, 100% { transform: translateY(0) scale(1.008); }
+  50% { transform: translateY(-7px) scale(1.016); }
 }
 @keyframes light-scan {
   0%, 22% { transform: translateX(-38%); opacity: 0; }
