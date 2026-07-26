@@ -39,3 +39,22 @@ test("includes the hand-drawn opening signature", async () => {
   assert.match(page, /sessionStorage/);
   assert.ok(signature.size > 0);
 });
+
+test("includes the Y2K art mode, original lettering, and music", async () => {
+  const [page, styles, track] = await Promise.all([
+    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+    stat(new URL("../public/art-mode-track.mp3", import.meta.url)),
+  ]);
+
+  assert.match(page, /Switch to Y2K dark theme/);
+  assert.match(page, /localStorage/);
+  assert.match(page, /Drawn,/);
+  assert.match(page, /Kinetic type study/);
+  assert.match(page, /Personal<br \/>practice/);
+  assert.match(page, /art-mode-track\.mp3/);
+  assert.match(page, /Pause Art Mode music/);
+  assert.match(styles, /name-signature\.png/);
+  assert.doesNotMatch(styles, /y2k-dark-hero/);
+  assert.ok(track.size > 0);
+});

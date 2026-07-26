@@ -4,7 +4,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 const pages = ["Index", "Practice", "About", "Contact"];
 const hashes = ["intro", "practice", "about", "contact"];
+const artPages = ["Start", "Lettering", "Motion", "Notes"];
+const artHashes = ["art", "lettering", "motion", "notes"];
 const introSeenKey = "vishwesh-portfolio-intro-seen";
+const themePreferenceKey = "vishwesh-portfolio-theme";
 
 const disciplines = [
   { title: "Software", status: "Main", description: "Web interfaces and small software tools." },
@@ -18,27 +21,75 @@ export default function Home() {
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState<"next" | "previous">("next");
   const [introPhase, setIntroPhase] = useState<"checking" | "active" | "leaving" | "hidden">("checking");
+  const [isY2K, setIsY2K] = useState(false);
+  const [isTrackPlaying, setIsTrackPlaying] = useState(false);
   const touchStart = useRef<number | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const introRevealFrame = useRef<number | null>(null);
   const introTimers = useRef<number[]>([]);
+  const activePages = isY2K ? artPages : pages;
 
   const goTo = useCallback((nextPage: number) => {
-    const target = Math.max(0, Math.min(pages.length - 1, nextPage));
+    const target = Math.max(0, Math.min(artPages.length - 1, nextPage));
     setPage((current) => {
       if (target === current) return current;
       setDirection(target > current ? "next" : "previous");
       return target;
     });
-    window.history.replaceState(null, "", `#${hashes[target]}`);
-  }, []);
+    window.history.replaceState(null, "", `#${(isY2K ? artHashes : hashes)[target]}`);
+  }, [isY2K]);
 
   useEffect(() => {
-    const hashIndex = hashes.indexOf(window.location.hash.slice(1));
-    if (hashIndex < 0) return;
+    const currentHash = window.location.hash.slice(1);
+    const artHashIndex = artHashes.indexOf(currentHash);
+    const siteHashIndex = hashes.indexOf(currentHash);
+    const prefersArtMode = window.localStorage.getItem(themePreferenceKey) === "y2k";
 
-    const frame = window.requestAnimationFrame(() => setPage(hashIndex));
+    const frame = window.requestAnimationFrame(() => {
+      if (artHashIndex >= 0 || (siteHashIndex < 0 && prefersArtMode)) {
+        setIsY2K(true);
+        setPage(artHashIndex >= 0 ? artHashIndex : 0);
+        window.localStorage.setItem(themePreferenceKey, "y2k");
+        if (artHashIndex < 0) window.history.replaceState(null, "", "#art");
+        return;
+      }
+
+      setIsY2K(false);
+      if (siteHashIndex >= 0) setPage(siteHashIndex);
+    });
     return () => window.cancelAnimationFrame(frame);
   }, []);
+
+  const toggleTheme = () => {
+    const nextTheme = !isY2K;
+    setIsY2K(nextTheme);
+    setPage(0);
+    setDirection("next");
+    window.localStorage.setItem(themePreferenceKey, nextTheme ? "y2k" : "daylight");
+    window.history.replaceState(null, "", nextTheme ? "#art" : "#intro");
+
+    if (nextTheme && audioRef.current) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.muted = false;
+      audioRef.current.volume = .48;
+      void audioRef.current.play().catch(() => setIsTrackPlaying(false));
+    } else {
+      audioRef.current?.pause();
+    }
+  };
+
+  const toggleTrack = () => {
+    const track = audioRef.current;
+    if (!track) return;
+
+    if (track.paused) {
+      track.volume = .48;
+      void track.play().catch(() => setIsTrackPlaying(false));
+      return;
+    }
+
+    track.pause();
+  };
 
   const dismissIntro = useCallback(() => {
     if (introRevealFrame.current !== null) window.cancelAnimationFrame(introRevealFrame.current);
@@ -85,11 +136,11 @@ export default function Home() {
       if (event.key === "ArrowRight" || event.key === "PageDown") goTo(page + 1);
       if (event.key === "ArrowLeft" || event.key === "PageUp") goTo(page - 1);
       if (event.key === "Home") goTo(0);
-      if (event.key === "End") goTo(pages.length - 1);
+      if (event.key === "End") goTo(activePages.length - 1);
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [dismissIntro, goTo, introPhase, page]);
+  }, [activePages.length, dismissIntro, goTo, introPhase, page]);
 
   const onTouchStart = (event: React.TouchEvent) => {
     touchStart.current = event.touches[0]?.clientX ?? null;
@@ -103,7 +154,16 @@ export default function Home() {
   };
 
   return (
-    <div className={`portfolio theme-${page}`}>
+    <div className={`portfolio theme-${page}${isY2K ? " mode-y2k" : ""}`}>
+      <audio
+        ref={audioRef}
+        src="/art-mode-track.mp3"
+        preload="metadata"
+        loop
+        onPlay={() => setIsTrackPlaying(true)}
+        onPause={() => setIsTrackPlaying(false)}
+      />
+
       {introPhase !== "hidden" && (
         <div className={`intro-loader intro-loader--${introPhase}`}>
           <div className="intro-signature" aria-hidden="true" />
@@ -118,19 +178,45 @@ export default function Home() {
 
       <div className="artboard">
         <header className="site-header">
-          <button className="brand" type="button" onClick={() => goTo(0)} aria-label="Go to introduction">
-            Vishwesh Mashruwala
+          <button className="brand" type="button" onClick={() => goTo(0)} aria-label={isY2K ? "Go to art mode start" : "Go to introduction"}>
+            {isY2K ? "Vishwesh / Art mode" : "Vishwesh Mashruwala"}
           </button>
 
           <nav className="nav" aria-label="Portfolio pages">
-            {pages.map((label, index) => (
+            {activePages.map((label, index) => (
               <button type="button" key={label} onClick={() => goTo(index)} aria-current={page === index ? "page" : undefined}>
                 {label}
               </button>
             ))}
           </nav>
 
-          <p className="availability"><span aria-hidden="true" />Open to software work</p>
+          <div className="header-actions">
+            {!isY2K && <p className="availability"><span aria-hidden="true" />Open to software work</p>}
+            {isY2K && (
+              <button
+                className={`music-toggle${isTrackPlaying ? " is-playing" : ""}`}
+                type="button"
+                onClick={toggleTrack}
+                aria-pressed={isTrackPlaying}
+                aria-label={isTrackPlaying ? "Pause Art Mode music" : "Play Art Mode music"}
+              >
+                <span className="music-levels" aria-hidden="true"><i /><i /><i /></span>
+                <span>{isTrackPlaying ? "Pause" : "Play"}</span>
+              </button>
+            )}
+            <button
+              className="theme-toggle"
+              type="button"
+              onClick={toggleTheme}
+              aria-pressed={isY2K}
+              aria-label={isY2K ? "Switch to daylight theme" : "Switch to Y2K dark theme"}
+            >
+              <span className="theme-toggle-label">{isY2K ? "Day" : "Y2K"}</span>
+              <span className="theme-toggle-track" aria-hidden="true">
+                <span />
+              </span>
+            </button>
+          </div>
         </header>
 
         <main
@@ -138,8 +224,8 @@ export default function Home() {
           onTouchStart={onTouchStart}
           onTouchEnd={onTouchEnd}
         >
-          <section key={page} className={`page-view enter-${direction}`} aria-live="polite" aria-label={`${pages[page]} page`}>
-            {page === 0 && (
+          <section key={`${isY2K ? "art" : "site"}-${page}`} className={`page-view enter-${direction}`} aria-live="polite" aria-label={`${activePages[page]} page`}>
+            {!isY2K && page === 0 && (
               <div className="intro-page page-padding">
                 <div className="intro-meta">
                   <p>Software · self-employed</p>
@@ -158,7 +244,7 @@ export default function Home() {
               </div>
             )}
 
-            {page === 1 && (
+            {!isY2K && page === 1 && (
               <div className="practice-page page-padding">
                 <div className="page-heading">
                   <p className="eyebrow">Practice</p>
@@ -178,7 +264,7 @@ export default function Home() {
               </div>
             )}
 
-            {page === 2 && (
+            {!isY2K && page === 2 && (
               <div className="about-page page-padding">
                 <div className="page-heading">
                   <p className="eyebrow">About</p>
@@ -197,7 +283,7 @@ export default function Home() {
               </div>
             )}
 
-            {page === 3 && (
+            {!isY2K && page === 3 && (
               <div className="contact-page page-padding">
                 <p className="eyebrow">Contact</p>
                 <h2>Available for<br />software work.</h2>
@@ -223,19 +309,86 @@ export default function Home() {
                 </div>
               </div>
             )}
+
+            {isY2K && page === 0 && (
+              <div className="art-index-page">
+                <div className="art-index-hero" aria-hidden="true" />
+                <div className="art-index-meta">
+                  <p>Personal work</p>
+                  <p>Art mode · 2026</p>
+                </div>
+                <div className="art-index-copy">
+                  <p className="art-kicker">Drawing · editing · experiments</p>
+                  <h1>My visual<br /><span>practice.</span></h1>
+                  <button type="button" onClick={() => goTo(1)}>Open first piece <span aria-hidden="true">→</span></button>
+                </div>
+              </div>
+            )}
+
+            {isY2K && page === 1 && (
+              <div className="lettering-page page-padding">
+                <div className="art-section-copy">
+                  <p className="eyebrow">01 / Lettering</p>
+                  <h2>Drawn,<br />not typed.</h2>
+                  <p>This is the name drawing used in the site&apos;s opening animation. I made it in Procreate instead of using a typeface.</p>
+                  <dl className="art-piece-facts">
+                    <div><dt>Tool</dt><dd>Procreate</dd></div>
+                    <div><dt>Medium</dt><dd>Digital lettering</dd></div>
+                    <div><dt>Use</dt><dd>Opening title</dd></div>
+                  </dl>
+                </div>
+                <div className="lettering-canvas" aria-label="Hand-drawn Vishwesh Mashruwala lettering">
+                  <div aria-hidden="true" />
+                </div>
+              </div>
+            )}
+
+            {isY2K && page === 2 && (
+              <div className="motion-page page-padding">
+                <div className="art-section-copy">
+                  <p className="eyebrow">02 / Motion</p>
+                  <h2>Video<br />editing.</h2>
+                  <p>I&apos;m interested in pacing, cuts, sequencing, and the way sound changes how an image feels.</p>
+                </div>
+                <div className="motion-canvas" aria-label="Kinetic name study">
+                  <p>Vishwesh</p>
+                  <p aria-hidden="true">Vishwesh</p>
+                  <p aria-hidden="true">Vishwesh</p>
+                  <span>Kinetic type study</span>
+                </div>
+              </div>
+            )}
+
+            {isY2K && page === 3 && (
+              <div className="art-notes-page page-padding">
+                <div className="art-section-copy">
+                  <p className="eyebrow">03 / Notes</p>
+                  <h2>Personal<br />practice.</h2>
+                  <p>This side of the site is for drawings, edits, and visual experiments. I&apos;ll add finished pieces here as I make them.</p>
+                </div>
+                <div className="art-notes-card">
+                  <div className="art-notes-image" aria-hidden="true" />
+                  <dl>
+                    <div><dt>Online now</dt><dd>01 lettering piece</dd></div>
+                    <div><dt>Also exploring</dt><dd>Video editing</dd></div>
+                    <div><dt>Status</dt><dd>Work in progress</dd></div>
+                  </dl>
+                </div>
+              </div>
+            )}
           </section>
         </main>
 
         <footer className="pagination" aria-label="Page navigation">
-          <p>{String(page + 1).padStart(2, "0")} / {String(pages.length).padStart(2, "0")}</p>
+          <p>{String(page + 1).padStart(2, "0")} / {String(activePages.length).padStart(2, "0")}</p>
           <div className="page-dots">
-            {pages.map((label, index) => (
+            {activePages.map((label, index) => (
               <button type="button" key={label} className={page === index ? "active" : ""} onClick={() => goTo(index)} aria-label={`Go to ${label}`} aria-current={page === index ? "page" : undefined} />
             ))}
           </div>
           <div className="page-arrows">
             <button type="button" onClick={() => goTo(page - 1)} disabled={page === 0} aria-label="Previous page">←</button>
-            <button type="button" onClick={() => goTo(page + 1)} disabled={page === pages.length - 1} aria-label="Next page">→</button>
+            <button type="button" onClick={() => goTo(page + 1)} disabled={page === activePages.length - 1} aria-label="Next page">→</button>
           </div>
         </footer>
       </div>
