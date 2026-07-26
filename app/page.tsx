@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 const pages = ["Index", "Practice", "About", "Contact"];
 const hashes = ["intro", "practice", "about", "contact"];
+const introSeenKey = "vishwesh-portfolio-intro-seen";
 
 const disciplines = [
   { title: "Software", status: "Main", description: "Web interfaces and small software tools." },
@@ -16,7 +17,10 @@ const disciplines = [
 export default function Home() {
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState<"next" | "previous">("next");
+  const [introPhase, setIntroPhase] = useState<"checking" | "active" | "leaving" | "hidden">("checking");
   const touchStart = useRef<number | null>(null);
+  const introRevealFrame = useRef<number | null>(null);
+  const introTimers = useRef<number[]>([]);
 
   const goTo = useCallback((nextPage: number) => {
     const target = Math.max(0, Math.min(pages.length - 1, nextPage));
@@ -36,8 +40,48 @@ export default function Home() {
     return () => window.cancelAnimationFrame(frame);
   }, []);
 
+  const dismissIntro = useCallback(() => {
+    if (introRevealFrame.current !== null) window.cancelAnimationFrame(introRevealFrame.current);
+    introTimers.current.forEach((timer) => window.clearTimeout(timer));
+    introTimers.current = [];
+    window.sessionStorage.setItem(introSeenKey, "true");
+    setIntroPhase((current) => current === "hidden" ? current : "leaving");
+    introTimers.current = [window.setTimeout(() => setIntroPhase("hidden"), 620)];
+  }, []);
+
+  useEffect(() => {
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const hasSeenIntro = window.sessionStorage.getItem(introSeenKey) === "true";
+
+    if (prefersReducedMotion || hasSeenIntro) {
+      introRevealFrame.current = window.requestAnimationFrame(() => setIntroPhase("hidden"));
+      return () => {
+        if (introRevealFrame.current !== null) window.cancelAnimationFrame(introRevealFrame.current);
+      };
+    }
+
+    introRevealFrame.current = window.requestAnimationFrame(() => setIntroPhase("active"));
+    const leaveTimer = window.setTimeout(() => setIntroPhase("leaving"), 1900);
+    const hideTimer = window.setTimeout(() => {
+      window.sessionStorage.setItem(introSeenKey, "true");
+      setIntroPhase("hidden");
+    }, 2520);
+    introTimers.current = [leaveTimer, hideTimer];
+
+    return () => {
+      if (introRevealFrame.current !== null) window.cancelAnimationFrame(introRevealFrame.current);
+      introTimers.current.forEach((timer) => window.clearTimeout(timer));
+      introTimers.current = [];
+    };
+  }, []);
+
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
+      if (introPhase !== "hidden") {
+        if (event.key === "Escape") dismissIntro();
+        return;
+      }
+
       if (event.key === "ArrowRight" || event.key === "PageDown") goTo(page + 1);
       if (event.key === "ArrowLeft" || event.key === "PageUp") goTo(page - 1);
       if (event.key === "Home") goTo(0);
@@ -45,7 +89,7 @@ export default function Home() {
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [goTo, page]);
+  }, [dismissIntro, goTo, introPhase, page]);
 
   const onTouchStart = (event: React.TouchEvent) => {
     touchStart.current = event.touches[0]?.clientX ?? null;
@@ -60,6 +104,15 @@ export default function Home() {
 
   return (
     <div className={`portfolio theme-${page}`}>
+      {introPhase !== "hidden" && (
+        <div className={`intro-loader intro-loader--${introPhase}`}>
+          <div className="intro-signature" aria-hidden="true" />
+          <button type="button" onClick={dismissIntro} aria-label="Skip opening animation">
+            Skip
+          </button>
+        </div>
+      )}
+
       <div className="aura aura-one" aria-hidden="true" />
       <div className="aura aura-two" aria-hidden="true" />
 

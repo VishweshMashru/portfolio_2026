@@ -22,6 +22,81 @@ a { color: inherit; }
 button:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
 ::selection { background: rgba(36, 121, 206, .22); }
 
+.intro-loader {
+  position: fixed;
+  z-index: 20;
+  inset: 0;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 50% 48%, rgba(51, 91, 119, .26), transparent 43%),
+    #101c24;
+  color: #c6d7df;
+}
+.intro-loader::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(112deg, transparent 34%, rgba(126, 161, 239, .055) 50%, transparent 66%);
+  transform: translateX(-35%);
+}
+.intro-loader--active::before { animation: intro-light 1.8s var(--ease-out) both; }
+.intro-loader--leaving {
+  pointer-events: none;
+  animation: intro-leave .62s var(--ease-out) both;
+}
+.intro-signature {
+  width: min(72vw, 980px);
+  aspect-ratio: 1600 / 744;
+  background: url("/name-signature.png") center / contain no-repeat;
+  clip-path: inset(0 100% 0 0);
+  filter: drop-shadow(0 14px 34px rgba(68, 118, 225, .14));
+  opacity: 0;
+  transform: translateY(10px) scale(.985);
+}
+.intro-loader--active .intro-signature {
+  animation: signature-reveal 1.15s .16s var(--ease-out) both;
+}
+.intro-loader--leaving .intro-signature {
+  clip-path: inset(0);
+  opacity: 1;
+  filter: drop-shadow(0 14px 34px rgba(68, 118, 225, .14));
+  transform: none;
+}
+.intro-loader button {
+  position: absolute;
+  top: max(24px, env(safe-area-inset-top));
+  right: max(28px, env(safe-area-inset-right));
+  border: 0;
+  padding: 10px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 550;
+  letter-spacing: .02em;
+  opacity: .64;
+  transition: opacity .2s ease;
+}
+.intro-loader button:hover { opacity: 1; }
+@keyframes signature-reveal {
+  0% { clip-path: inset(0 100% 0 0); opacity: 0; transform: translateY(10px) scale(.985); filter: blur(3px) drop-shadow(0 14px 34px rgba(68, 118, 225, .14)); }
+  18% { opacity: 1; }
+  100% { clip-path: inset(0); opacity: 1; transform: none; filter: blur(0) drop-shadow(0 14px 34px rgba(68, 118, 225, .14)); }
+}
+@keyframes intro-light {
+  from { transform: translateX(-35%); opacity: 0; }
+  40% { opacity: 1; }
+  to { transform: translateX(35%); opacity: 0; }
+}
+@keyframes intro-leave {
+  from { clip-path: inset(0); opacity: 1; }
+  to { clip-path: inset(0 0 100% 0); opacity: .96; }
+}
+
 .portfolio {
   width: 100%;
   height: 100svh;
@@ -299,6 +374,13 @@ button:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
 }
 
 @media (max-width: 580px) {
+  .intro-signature { width: min(88vw, 500px); }
+  .intro-loader button {
+    top: max(12px, env(safe-area-inset-top));
+    right: max(12px, env(safe-area-inset-right));
+    min-width: 44px;
+    min-height: 44px;
+  }
   .portfolio {
     min-height: 0;
     padding:
@@ -462,6 +544,7 @@ button:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
 }
 
 @media (orientation: landscape) and (max-height: 520px) and (max-width: 900px) {
+  .intro-signature { width: min(65vw, 680px); }
   .portfolio {
     min-height: 0;
     padding:
@@ -512,5 +595,6 @@ button:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .intro-loader { display: none; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
