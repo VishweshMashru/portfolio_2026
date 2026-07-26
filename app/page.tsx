@@ -4,8 +4,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 const pages = ["Index", "Practice", "About", "Contact"];
 const hashes = ["intro", "practice", "about", "contact"];
-const artPages = ["Start", "Lettering", "Motion", "Notes"];
-const artHashes = ["art", "lettering", "motion", "notes"];
+const artPages = [
+  { title: "3D Art", nav: "3D Art", hash: "art", slug: "3d" },
+  { title: "Digital Art", nav: "Digital", hash: "digital-art", slug: "digital" },
+  { title: "Video Editing", nav: "Video", hash: "video-editing", slug: "video" },
+  { title: "Photos", nav: "Photos", hash: "photos", slug: "photos" },
+];
+const artHashes = artPages.map(({ hash }) => hash);
 const introSeenKey = "vishwesh-portfolio-intro-seen";
 const themePreferenceKey = "vishwesh-portfolio-theme";
 
@@ -27,10 +32,11 @@ export default function Home() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const introRevealFrame = useRef<number | null>(null);
   const introTimers = useRef<number[]>([]);
-  const activePages = isY2K ? artPages : pages;
+  const navigationLabels = isY2K ? artPages.map(({ nav }) => nav) : pages;
+  const pageCount = navigationLabels.length;
 
   const goTo = useCallback((nextPage: number) => {
-    const target = Math.max(0, Math.min(artPages.length - 1, nextPage));
+    const target = Math.max(0, Math.min((isY2K ? artHashes : hashes).length - 1, nextPage));
     setPage((current) => {
       if (target === current) return current;
       setDirection(target > current ? "next" : "previous");
@@ -112,11 +118,11 @@ export default function Home() {
     }
 
     introRevealFrame.current = window.requestAnimationFrame(() => setIntroPhase("active"));
-    const leaveTimer = window.setTimeout(() => setIntroPhase("leaving"), 1900);
+    const leaveTimer = window.setTimeout(() => setIntroPhase("leaving"), 2250);
     const hideTimer = window.setTimeout(() => {
       window.sessionStorage.setItem(introSeenKey, "true");
       setIntroPhase("hidden");
-    }, 2520);
+    }, 2870);
     introTimers.current = [leaveTimer, hideTimer];
 
     return () => {
@@ -136,11 +142,11 @@ export default function Home() {
       if (event.key === "ArrowRight" || event.key === "PageDown") goTo(page + 1);
       if (event.key === "ArrowLeft" || event.key === "PageUp") goTo(page - 1);
       if (event.key === "Home") goTo(0);
-      if (event.key === "End") goTo(activePages.length - 1);
+      if (event.key === "End") goTo(pageCount - 1);
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [activePages.length, dismissIntro, goTo, introPhase, page]);
+  }, [dismissIntro, goTo, introPhase, page, pageCount]);
 
   const onTouchStart = (event: React.TouchEvent) => {
     touchStart.current = event.touches[0]?.clientX ?? null;
@@ -166,7 +172,7 @@ export default function Home() {
 
       {introPhase !== "hidden" && (
         <div className={`intro-loader intro-loader--${introPhase}`}>
-          <div className="intro-signature" aria-hidden="true" />
+          <div className="intro-wheel" aria-hidden="true" />
           <button type="button" onClick={dismissIntro} aria-label="Skip opening animation">
             Skip
           </button>
@@ -178,12 +184,12 @@ export default function Home() {
 
       <div className="artboard">
         <header className="site-header">
-          <button className="brand" type="button" onClick={() => goTo(0)} aria-label={isY2K ? "Go to art mode start" : "Go to introduction"}>
-            {isY2K ? "Vishwesh / Art mode" : "Vishwesh Mashruwala"}
+          <button className="brand" type="button" onClick={() => goTo(0)} aria-label={isY2K ? "Go to art canvas" : "Go to introduction"}>
+            {isY2K ? "Vishwesh" : "Vishwesh Mashruwala"}
           </button>
 
-          <nav className="nav" aria-label="Portfolio pages">
-            {activePages.map((label, index) => (
+          <nav className={`nav${isY2K ? " art-nav" : ""}`} aria-label={isY2K ? "Art sections" : "Portfolio pages"}>
+            {navigationLabels.map((label, index) => (
               <button type="button" key={label} onClick={() => goTo(index)} aria-current={page === index ? "page" : undefined}>
                 {label}
               </button>
@@ -209,9 +215,9 @@ export default function Home() {
               type="button"
               onClick={toggleTheme}
               aria-pressed={isY2K}
-              aria-label={isY2K ? "Switch to daylight theme" : "Switch to Y2K dark theme"}
+              aria-label={isY2K ? "Return to software portfolio" : "Open art mode"}
             >
-              <span className="theme-toggle-label">{isY2K ? "Day" : "Y2K"}</span>
+              <span className="theme-toggle-label">{isY2K ? "Portfolio" : "Art mode"}</span>
               <span className="theme-toggle-track" aria-hidden="true">
                 <span />
               </span>
@@ -224,7 +230,7 @@ export default function Home() {
           onTouchStart={onTouchStart}
           onTouchEnd={onTouchEnd}
         >
-          <section key={`${isY2K ? "art" : "site"}-${page}`} className={`page-view enter-${direction}`} aria-live="polite" aria-label={`${activePages[page]} page`}>
+          <section key={`${isY2K ? "art" : "site"}-${page}`} className={`page-view enter-${direction}`} aria-live="polite" aria-label={isY2K ? `${artPages[page].title} section` : `${pages[page]} page`}>
             {!isY2K && page === 0 && (
               <div className="intro-page page-padding">
                 <div className="intro-meta">
@@ -310,85 +316,33 @@ export default function Home() {
               </div>
             )}
 
-            {isY2K && page === 0 && (
-              <div className="art-index-page">
-                <div className="art-index-hero" aria-hidden="true" />
-                <div className="art-index-meta">
-                  <p>Personal work</p>
-                  <p>Art mode · 2026</p>
+            {isY2K && (
+              <div className={`art-coming-page art-coming-${artPages[page].slug}`}>
+                <p className="art-coming-index">{String(page + 1).padStart(2, "0")} / {String(artPages.length).padStart(2, "0")}</p>
+                <div className="art-coming-object" aria-hidden="true">
+                  <span />
+                  <span />
+                  <span />
                 </div>
-                <div className="art-index-copy">
-                  <p className="art-kicker">Drawing · editing · experiments</p>
-                  <h1>My visual<br /><span>practice.</span></h1>
-                  <button type="button" onClick={() => goTo(1)}>Open first piece <span aria-hidden="true">→</span></button>
-                </div>
-              </div>
-            )}
-
-            {isY2K && page === 1 && (
-              <div className="lettering-page page-padding">
-                <div className="art-section-copy">
-                  <p className="eyebrow">01 / Lettering</p>
-                  <h2>Drawn,<br />not typed.</h2>
-                  <p>This is the name drawing used in the site&apos;s opening animation. I made it in Procreate instead of using a typeface.</p>
-                  <dl className="art-piece-facts">
-                    <div><dt>Tool</dt><dd>Procreate</dd></div>
-                    <div><dt>Medium</dt><dd>Digital lettering</dd></div>
-                    <div><dt>Use</dt><dd>Opening title</dd></div>
-                  </dl>
-                </div>
-                <div className="lettering-canvas" aria-label="Hand-drawn Vishwesh Mashruwala lettering">
-                  <div aria-hidden="true" />
-                </div>
-              </div>
-            )}
-
-            {isY2K && page === 2 && (
-              <div className="motion-page page-padding">
-                <div className="art-section-copy">
-                  <p className="eyebrow">02 / Motion</p>
-                  <h2>Video<br />editing.</h2>
-                  <p>I&apos;m interested in pacing, cuts, sequencing, and the way sound changes how an image feels.</p>
-                </div>
-                <div className="motion-canvas" aria-label="Kinetic name study">
-                  <p>Vishwesh</p>
-                  <p aria-hidden="true">Vishwesh</p>
-                  <p aria-hidden="true">Vishwesh</p>
-                  <span>Kinetic type study</span>
-                </div>
-              </div>
-            )}
-
-            {isY2K && page === 3 && (
-              <div className="art-notes-page page-padding">
-                <div className="art-section-copy">
-                  <p className="eyebrow">03 / Notes</p>
-                  <h2>Personal<br />practice.</h2>
-                  <p>This side of the site is for drawings, edits, and visual experiments. I&apos;ll add finished pieces here as I make them.</p>
-                </div>
-                <div className="art-notes-card">
-                  <div className="art-notes-image" aria-hidden="true" />
-                  <dl>
-                    <div><dt>Online now</dt><dd>01 lettering piece</dd></div>
-                    <div><dt>Also exploring</dt><dd>Video editing</dd></div>
-                    <div><dt>Status</dt><dd>Work in progress</dd></div>
-                  </dl>
+                <div className="art-coming-copy">
+                  <h1>{artPages[page].title}</h1>
+                  <p>Coming soon.</p>
                 </div>
               </div>
             )}
           </section>
         </main>
 
-        <footer className="pagination" aria-label="Page navigation">
-          <p>{String(page + 1).padStart(2, "0")} / {String(activePages.length).padStart(2, "0")}</p>
+        <footer className="pagination" aria-label={isY2K ? "Art section navigation" : "Page navigation"}>
+          <p>{String(page + 1).padStart(2, "0")} / {String(pageCount).padStart(2, "0")}</p>
           <div className="page-dots">
-            {activePages.map((label, index) => (
+            {navigationLabels.map((label, index) => (
               <button type="button" key={label} className={page === index ? "active" : ""} onClick={() => goTo(index)} aria-label={`Go to ${label}`} aria-current={page === index ? "page" : undefined} />
             ))}
           </div>
           <div className="page-arrows">
             <button type="button" onClick={() => goTo(page - 1)} disabled={page === 0} aria-label="Previous page">←</button>
-            <button type="button" onClick={() => goTo(page + 1)} disabled={page === activePages.length - 1} aria-label="Next page">→</button>
+            <button type="button" onClick={() => goTo(page + 1)} disabled={page === pageCount - 1} aria-label="Next page">→</button>
           </div>
         </footer>
       </div>

@@ -28,32 +28,36 @@ test("includes direct contact methods", async () => {
   assert.match(source, /https:\/\/wa\.me\/919537517519/);
 });
 
-test("includes the hand-drawn opening signature", async () => {
-  const [page, styles, signature] = await Promise.all([
+test("includes the once-per-session animated loading wheel", async () => {
+  const [page, styles, loader] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
-    stat(new URL("../public/name-signature.png", import.meta.url)),
+    stat(new URL("../public/loading-wheel.png", import.meta.url)),
   ]);
 
-  assert.match(styles, /name-signature\.png/);
+  assert.match(styles, /loading-wheel\.png/);
   assert.match(page, /sessionStorage/);
-  assert.ok(signature.size > 0);
+  assert.ok(loader.size > 0);
 });
 
-test("includes the Y2K art mode, original lettering, and music", async () => {
+test("includes four honest coming-soon art sections with original artwork and music", async () => {
   const [page, styles, track] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     stat(new URL("../public/art-mode-track.mp3", import.meta.url)),
   ]);
 
-  assert.match(page, /Switch to Y2K dark theme/);
+  assert.match(page, /Open art mode/);
+  assert.match(page, /Return to software portfolio/);
   assert.match(page, /localStorage/);
-  assert.match(page, /Drawn,/);
-  assert.match(page, /Kinetic type study/);
-  assert.match(page, /Personal<br \/>practice/);
+  assert.match(page, /3D Art/);
+  assert.match(page, /Digital Art/);
+  assert.match(page, /Video Editing/);
+  assert.match(page, /Photos/);
+  assert.match(page, /Coming soon\./);
   assert.match(page, /art-mode-track\.mp3/);
   assert.match(page, /Pause Art Mode music/);
+  assert.doesNotMatch(page, /Lettering|Kinetic type study|Personal<br \/>practice|My visual/);
   assert.match(styles, /name-signature\.png/);
   assert.doesNotMatch(styles, /y2k-dark-hero/);
   assert.ok(track.size > 0);
