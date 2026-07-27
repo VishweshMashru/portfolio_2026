@@ -5,10 +5,42 @@ import { useCallback, useEffect, useRef, useState } from "react";
 const pages = ["Index", "Practice", "About", "Contact"];
 const hashes = ["intro", "practice", "about", "contact"];
 const artPages = [
-  { title: "3D Art", nav: "3D Art", hash: "art", slug: "3d" },
-  { title: "Digital Art", nav: "Digital", hash: "digital-art", slug: "digital" },
-  { title: "Video Editing", nav: "Video", hash: "video-editing", slug: "video" },
-  { title: "Photos", nav: "Photos", hash: "photos", slug: "photos" },
+  {
+    title: "3D Art",
+    nav: "3D Art",
+    hash: "art",
+    slug: "3d",
+    code: "OBJ—01",
+    rite: "Synthetic form rite",
+    note: "Future home for disco relics, synthetic saints, and impossible material studies.",
+  },
+  {
+    title: "Digital Art",
+    nav: "Digital",
+    hash: "digital-art",
+    slug: "digital",
+    code: "IMG—02",
+    rite: "Painted signal rite",
+    note: "Future home for overdrawn dreams, hand-made screen debris, and electric little ghosts.",
+  },
+  {
+    title: "Video Editing",
+    nav: "Video",
+    hash: "video-editing",
+    slug: "video",
+    code: "MOV—03",
+    rite: "Low-light motion rite",
+    note: "Future home for cuts, loops, noise, and sequences that feel like a half-remembered club.",
+  },
+  {
+    title: "Photos",
+    nav: "Photos",
+    hash: "photos",
+    slug: "photos",
+    code: "MEM—04",
+    rite: "Flash memory rite",
+    note: "Future home for flash ghosts, late rooms, and accidental evidence from the soft underground.",
+  },
 ];
 const artHashes = artPages.map(({ hash }) => hash);
 const introSeenKey = "vishwesh-portfolio-intro-seen";
@@ -352,16 +384,26 @@ export default function Home() {
 
             {isY2K && (
               <div className={`art-coming-page art-coming-${artPages[page].slug}`}>
-                <p className="art-coming-index">{String(page + 1).padStart(2, "0")} / {String(artPages.length).padStart(2, "0")}</p>
+                <div className="art-ceremony-label" aria-hidden="true">
+                  <span>Visual congregation</span>
+                  <span>Private archive · India · 20XX</span>
+                </div>
+                <p className="art-coming-index">
+                  <span>{artPages[page].code}</span>
+                  {String(page + 1).padStart(2, "0")} / {String(artPages.length).padStart(2, "0")}
+                </p>
                 <div className="art-coming-object" aria-hidden="true">
                   <span />
                   <span />
                   <span />
                 </div>
                 <div className="art-coming-copy">
+                  <p className="art-coming-rite">{artPages[page].rite}</p>
                   <h1>{artPages[page].title}</h1>
-                  <p>Coming soon.</p>
+                  <p className="art-coming-note">{artPages[page].note}</p>
+                  <p className="art-coming-status"><i aria-hidden="true" />Archive sealed · Coming soon.</p>
                 </div>
+                <p className="art-whisper" aria-hidden="true">No doctrine / only artifacts</p>
               </div>
             )}
           </section>

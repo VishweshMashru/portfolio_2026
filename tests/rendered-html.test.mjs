@@ -64,6 +64,9 @@ test("includes four honest coming-soon art sections with original artwork and mu
   assert.match(page, /Pause Art Mode music/);
   assert.doesNotMatch(page, /Lettering|Kinetic type study|Personal<br \/>practice|My visual/);
   assert.match(styles, /name-signature\.png/);
+  assert.match(styles, /retro-scan/);
+  assert.match(styles, /repeating-conic-gradient/);
+  assert.match(styles, /Courier New/);
   assert.doesNotMatch(styles, /y2k-dark-hero/);
   assert.ok(track.size > 0);
 });
