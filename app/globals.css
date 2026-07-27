@@ -34,6 +34,7 @@ button:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
     radial-gradient(circle at 50% 48%, rgba(108, 130, 194, .14), transparent 38%),
     #edf0eb;
   color: #283137;
+  animation: intro-failsafe .01s linear 4.5s forwards;
 }
 .intro-loader::before {
   content: "";
@@ -90,6 +91,9 @@ button:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
 @keyframes intro-leave {
   from { clip-path: inset(0); opacity: 1; }
   to { clip-path: inset(0 0 100% 0); opacity: .96; }
+}
+@keyframes intro-failsafe {
+  to { visibility: hidden; opacity: 0; pointer-events: none; }
 }
 
 .portfolio {

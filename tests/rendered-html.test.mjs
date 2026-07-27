@@ -32,12 +32,17 @@ test("includes the once-per-session animated loading wheel", async () => {
   const [page, styles, loader] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
-    stat(new URL("../public/loading-wheel.png", import.meta.url)),
+    readFile(new URL("../public/loading-wheel.png", import.meta.url)),
   ]);
 
+  const animationControl = loader.indexOf(Buffer.from("acTL"));
   assert.match(styles, /loading-wheel\.png/);
+  assert.match(styles, /intro-failsafe/);
   assert.match(page, /sessionStorage/);
-  assert.ok(loader.size > 0);
+  assert.match(page, /readSessionStorage/);
+  assert.match(page, /introPlaybackMs = 2850/);
+  assert.ok(animationControl > 0);
+  assert.equal(loader.readUInt32BE(animationControl + 8), 1);
 });
 
 test("includes four honest coming-soon art sections with original artwork and music", async () => {

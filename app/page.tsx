@@ -13,6 +13,40 @@ const artPages = [
 const artHashes = artPages.map(({ hash }) => hash);
 const introSeenKey = "vishwesh-portfolio-intro-seen";
 const themePreferenceKey = "vishwesh-portfolio-theme";
+const introPlaybackMs = 2850;
+const introExitMs = 620;
+
+function readLocalStorage(key: string) {
+  try {
+    return window.localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function writeLocalStorage(key: string, value: string) {
+  try {
+    window.localStorage.setItem(key, value);
+  } catch {
+    // Storage can be unavailable in private or embedded mobile browsers.
+  }
+}
+
+function readSessionStorage(key: string) {
+  try {
+    return window.sessionStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function writeSessionStorage(key: string, value: string) {
+  try {
+    window.sessionStorage.setItem(key, value);
+  } catch {
+    // The intro must still finish when session storage is unavailable.
+  }
+}
 
 const disciplines = [
   { title: "Software", status: "Main", description: "Web interfaces and small software tools." },
@@ -49,13 +83,13 @@ export default function Home() {
     const currentHash = window.location.hash.slice(1);
     const artHashIndex = artHashes.indexOf(currentHash);
     const siteHashIndex = hashes.indexOf(currentHash);
-    const prefersArtMode = window.localStorage.getItem(themePreferenceKey) === "y2k";
+    const prefersArtMode = readLocalStorage(themePreferenceKey) === "y2k";
 
     const frame = window.requestAnimationFrame(() => {
       if (artHashIndex >= 0 || (siteHashIndex < 0 && prefersArtMode)) {
         setIsY2K(true);
         setPage(artHashIndex >= 0 ? artHashIndex : 0);
-        window.localStorage.setItem(themePreferenceKey, "y2k");
+        writeLocalStorage(themePreferenceKey, "y2k");
         if (artHashIndex < 0) window.history.replaceState(null, "", "#art");
         return;
       }
@@ -71,7 +105,7 @@ export default function Home() {
     setIsY2K(nextTheme);
     setPage(0);
     setDirection("next");
-    window.localStorage.setItem(themePreferenceKey, nextTheme ? "y2k" : "daylight");
+    writeLocalStorage(themePreferenceKey, nextTheme ? "y2k" : "daylight");
     window.history.replaceState(null, "", nextTheme ? "#art" : "#intro");
 
     if (nextTheme && audioRef.current) {
@@ -101,14 +135,14 @@ export default function Home() {
     if (introRevealFrame.current !== null) window.cancelAnimationFrame(introRevealFrame.current);
     introTimers.current.forEach((timer) => window.clearTimeout(timer));
     introTimers.current = [];
-    window.sessionStorage.setItem(introSeenKey, "true");
+    writeSessionStorage(introSeenKey, "true");
     setIntroPhase((current) => current === "hidden" ? current : "leaving");
-    introTimers.current = [window.setTimeout(() => setIntroPhase("hidden"), 620)];
+    introTimers.current = [window.setTimeout(() => setIntroPhase("hidden"), introExitMs)];
   }, []);
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const hasSeenIntro = window.sessionStorage.getItem(introSeenKey) === "true";
+    const hasSeenIntro = readSessionStorage(introSeenKey) === "true";
 
     if (prefersReducedMotion || hasSeenIntro) {
       introRevealFrame.current = window.requestAnimationFrame(() => setIntroPhase("hidden"));
@@ -118,11 +152,11 @@ export default function Home() {
     }
 
     introRevealFrame.current = window.requestAnimationFrame(() => setIntroPhase("active"));
-    const leaveTimer = window.setTimeout(() => setIntroPhase("leaving"), 2250);
+    const leaveTimer = window.setTimeout(() => setIntroPhase("leaving"), introPlaybackMs);
     const hideTimer = window.setTimeout(() => {
-      window.sessionStorage.setItem(introSeenKey, "true");
+      writeSessionStorage(introSeenKey, "true");
       setIntroPhase("hidden");
-    }, 2870);
+    }, introPlaybackMs + introExitMs);
     introTimers.current = [leaveTimer, hideTimer];
 
     return () => {
