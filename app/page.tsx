@@ -11,10 +11,8 @@ const artPages = [
   { title: "Photos", nav: "Photos", hash: "photos", slug: "photos" },
 ];
 const artHashes = artPages.map(({ hash }) => hash);
-const introSeenKey = "vishwesh-portfolio-intro-seen";
 const themePreferenceKey = "vishwesh-portfolio-theme";
-const introPlaybackMs = 2850;
-const introExitMs = 620;
+const artTransitionExitMs = 620;
 
 function readLocalStorage(key: string) {
   try {
@@ -32,22 +30,6 @@ function writeLocalStorage(key: string, value: string) {
   }
 }
 
-function readSessionStorage(key: string) {
-  try {
-    return window.sessionStorage.getItem(key);
-  } catch {
-    return null;
-  }
-}
-
-function writeSessionStorage(key: string, value: string) {
-  try {
-    window.sessionStorage.setItem(key, value);
-  } catch {
-    // The intro must still finish when session storage is unavailable.
-  }
-}
-
 const disciplines = [
   { title: "Software", status: "Main", description: "Web interfaces and small software tools." },
   { title: "Hardware", status: "Learning", description: "Electronics, circuits, sensors, and physical computing." },
@@ -59,13 +41,14 @@ const disciplines = [
 export default function Home() {
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState<"next" | "previous">("next");
-  const [introPhase, setIntroPhase] = useState<"checking" | "active" | "leaving" | "hidden">("checking");
+  const [artTransitionPhase, setArtTransitionPhase] = useState<"hidden" | "playing" | "leaving">("hidden");
   const [isY2K, setIsY2K] = useState(false);
   const [isTrackPlaying, setIsTrackPlaying] = useState(false);
   const touchStart = useRef<number | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const introRevealFrame = useRef<number | null>(null);
-  const introTimers = useRef<number[]>([]);
+  const artTransitionVideoRef = useRef<HTMLVideoElement | null>(null);
+  const artTransitionActiveRef = useRef(false);
+  const artTransitionTimer = useRef<number | null>(null);
   const navigationLabels = isY2K ? artPages.map(({ nav }) => nav) : pages;
   const pageCount = navigationLabels.length;
 
@@ -100,22 +83,70 @@ export default function Home() {
     return () => window.cancelAnimationFrame(frame);
   }, []);
 
+  const finishArtTransition = useCallback(() => {
+    if (!artTransitionActiveRef.current) return;
+    artTransitionActiveRef.current = false;
+    artTransitionVideoRef.current?.pause();
+    setArtTransitionPhase("leaving");
+
+    const track = audioRef.current;
+    if (track) {
+      track.muted = false;
+      track.volume = .48;
+      if (track.paused) void track.play().catch(() => setIsTrackPlaying(false));
+    }
+
+    if (artTransitionTimer.current !== null) window.clearTimeout(artTransitionTimer.current);
+    artTransitionTimer.current = window.setTimeout(() => {
+      setArtTransitionPhase("hidden");
+      artTransitionTimer.current = null;
+    }, artTransitionExitMs);
+  }, []);
+
   const toggleTheme = () => {
-    const nextTheme = !isY2K;
-    setIsY2K(nextTheme);
     setPage(0);
     setDirection("next");
-    writeLocalStorage(themePreferenceKey, nextTheme ? "y2k" : "daylight");
-    window.history.replaceState(null, "", nextTheme ? "#art" : "#intro");
 
-    if (nextTheme && audioRef.current) {
-      audioRef.current.currentTime = 0;
-      audioRef.current.muted = false;
-      audioRef.current.volume = .48;
-      void audioRef.current.play().catch(() => setIsTrackPlaying(false));
-    } else {
+    if (isY2K) {
+      artTransitionActiveRef.current = false;
+      artTransitionVideoRef.current?.pause();
+      setArtTransitionPhase("hidden");
+      setIsY2K(false);
+      writeLocalStorage(themePreferenceKey, "daylight");
+      window.history.replaceState(null, "", "#intro");
       audioRef.current?.pause();
+      return;
     }
+
+    setIsY2K(true);
+    writeLocalStorage(themePreferenceKey, "y2k");
+    window.history.replaceState(null, "", "#art");
+
+    const track = audioRef.current;
+    if (track) {
+      track.currentTime = 0;
+      track.muted = false;
+      track.volume = 0;
+      void track.play().catch(() => setIsTrackPlaying(false));
+    }
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      if (track) track.volume = .48;
+      return;
+    }
+
+    const video = artTransitionVideoRef.current;
+    if (!video) {
+      if (track) track.volume = .48;
+      return;
+    }
+
+    artTransitionActiveRef.current = true;
+    setArtTransitionPhase("playing");
+    video.currentTime = 0;
+    video.muted = false;
+    video.volume = 1;
+    void video.play().catch(finishArtTransition);
   };
 
   const toggleTrack = () => {
@@ -131,45 +162,16 @@ export default function Home() {
     track.pause();
   };
 
-  const dismissIntro = useCallback(() => {
-    if (introRevealFrame.current !== null) window.cancelAnimationFrame(introRevealFrame.current);
-    introTimers.current.forEach((timer) => window.clearTimeout(timer));
-    introTimers.current = [];
-    writeSessionStorage(introSeenKey, "true");
-    setIntroPhase((current) => current === "hidden" ? current : "leaving");
-    introTimers.current = [window.setTimeout(() => setIntroPhase("hidden"), introExitMs)];
-  }, []);
-
   useEffect(() => {
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const hasSeenIntro = readSessionStorage(introSeenKey) === "true";
-
-    if (prefersReducedMotion || hasSeenIntro) {
-      introRevealFrame.current = window.requestAnimationFrame(() => setIntroPhase("hidden"));
-      return () => {
-        if (introRevealFrame.current !== null) window.cancelAnimationFrame(introRevealFrame.current);
-      };
-    }
-
-    introRevealFrame.current = window.requestAnimationFrame(() => setIntroPhase("active"));
-    const leaveTimer = window.setTimeout(() => setIntroPhase("leaving"), introPlaybackMs);
-    const hideTimer = window.setTimeout(() => {
-      writeSessionStorage(introSeenKey, "true");
-      setIntroPhase("hidden");
-    }, introPlaybackMs + introExitMs);
-    introTimers.current = [leaveTimer, hideTimer];
-
     return () => {
-      if (introRevealFrame.current !== null) window.cancelAnimationFrame(introRevealFrame.current);
-      introTimers.current.forEach((timer) => window.clearTimeout(timer));
-      introTimers.current = [];
+      if (artTransitionTimer.current !== null) window.clearTimeout(artTransitionTimer.current);
     };
   }, []);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if (introPhase !== "hidden") {
-        if (event.key === "Escape") dismissIntro();
+      if (artTransitionPhase !== "hidden") {
+        if (event.key === "Escape") finishArtTransition();
         return;
       }
 
@@ -180,7 +182,7 @@ export default function Home() {
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [dismissIntro, goTo, introPhase, page, pageCount]);
+  }, [artTransitionPhase, finishArtTransition, goTo, page, pageCount]);
 
   const onTouchStart = (event: React.TouchEvent) => {
     touchStart.current = event.touches[0]?.clientX ?? null;
@@ -204,14 +206,23 @@ export default function Home() {
         onPause={() => setIsTrackPlaying(false)}
       />
 
-      {introPhase !== "hidden" && (
-        <div className={`intro-loader intro-loader--${introPhase}`}>
-          <div className="intro-wheel" aria-hidden="true" />
-          <button type="button" onClick={dismissIntro} aria-label="Skip opening animation">
-            Skip
+      <div className={`art-transition art-transition--${artTransitionPhase}`} aria-hidden={artTransitionPhase === "hidden"}>
+        <video
+          ref={artTransitionVideoRef}
+          className="art-transition-video"
+          src="/mahoragawheel.mp4"
+          playsInline
+          preload="auto"
+          disablePictureInPicture
+          onEnded={finishArtTransition}
+          onError={finishArtTransition}
+        />
+        {artTransitionPhase !== "hidden" && (
+          <button className="art-transition-skip" type="button" onClick={finishArtTransition}>
+            Skip to Art mode
           </button>
-        </div>
-      )}
+        )}
+      </div>
 
       <div className="aura aura-one" aria-hidden="true" />
       <div className="aura aura-two" aria-hidden="true" />

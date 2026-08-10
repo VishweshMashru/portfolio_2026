@@ -28,28 +28,35 @@ test("includes direct contact methods", async () => {
   assert.match(source, /https:\/\/wa\.me\/919537517519/);
 });
 
-test("includes the once-per-session animated loading wheel", async () => {
-  const [page, styles, loader] = await Promise.all([
+test("uses the Mahoraga video as a sound-enabled Art Mode transition", async () => {
+  const [page, styles, transitionVideo] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
-    readFile(new URL("../public/loading-wheel.png", import.meta.url)),
+    readFile(new URL("../public/mahoragawheel.mp4", import.meta.url)),
   ]);
 
-  const animationControl = loader.indexOf(Buffer.from("acTL"));
-  assert.match(styles, /loading-wheel\.png/);
-  assert.match(styles, /intro-failsafe/);
-  assert.match(page, /sessionStorage/);
-  assert.match(page, /readSessionStorage/);
-  assert.match(page, /introPlaybackMs = 2850/);
-  assert.ok(animationControl > 0);
-  assert.equal(loader.readUInt32BE(animationControl + 8), 1);
+  assert.match(styles, /art-transition-video/);
+  assert.match(styles, /art-transition-leave/);
+  assert.match(page, /mahoragawheel\.mp4/);
+  assert.match(page, /video\.muted = false/);
+  assert.match(page, /video\.volume = 1/);
+  assert.match(page, /track\.volume = 0/);
+  assert.match(page, /Skip to Art mode/);
+  assert.doesNotMatch(page, /autoPlay/);
+  assert.match(page, /playsInline/);
+  assert.match(page, /onEnded=\{finishArtTransition\}/);
+  assert.doesNotMatch(page, /sessionStorage/);
+  assert.match(transitionVideo.subarray(0, 64).toString("latin1"), /ftyp/);
 });
 
-test("includes four honest coming-soon art sections with original artwork and music", async () => {
-  const [page, styles, track] = await Promise.all([
+test("includes four honest coming-soon art sections with original pixel artwork and music", async () => {
+  const [page, styles, track, pixelWordmark, pixelStudy, pixelPhone] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     stat(new URL("../public/art-mode-track.mp3", import.meta.url)),
+    stat(new URL("../public/pixel-wordmark.png", import.meta.url)),
+    stat(new URL("../public/pixel-study-red.png", import.meta.url)),
+    stat(new URL("../public/pixel-phone.png", import.meta.url)),
   ]);
 
   assert.match(page, /Open art mode/);
@@ -63,7 +70,13 @@ test("includes four honest coming-soon art sections with original artwork and mu
   assert.match(page, /art-mode-track\.mp3/);
   assert.match(page, /Pause Art Mode music/);
   assert.doesNotMatch(page, /Lettering|Kinetic type study|Personal<br \/>practice|My visual/);
-  assert.match(styles, /name-signature\.png/);
+  assert.match(styles, /pixel-wordmark\.png/);
+  assert.match(styles, /pixel-study-red\.png/);
+  assert.match(styles, /pixel-phone\.png/);
+  assert.match(styles, /image-rendering: pixelated/);
   assert.doesNotMatch(styles, /y2k-dark-hero/);
   assert.ok(track.size > 0);
+  assert.ok(pixelWordmark.size > 0);
+  assert.ok(pixelStudy.size > 0);
+  assert.ok(pixelPhone.size > 0);
 });
