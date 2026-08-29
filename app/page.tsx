@@ -1,14 +1,57 @@
 "use client";
 
+import Image from "next/image";
+import dynamic from "next/dynamic";
 import { useCallback, useEffect, useRef, useState } from "react";
+
+const ObjArtwork = dynamic(() => import("./ObjArtwork"), {
+  ssr: false,
+  loading: () => (
+    <div className="obj-artwork-shell">
+      <p className="obj-artwork-status is-loading">Loading model…</p>
+    </div>
+  ),
+});
 
 const pages = ["Index", "Practice", "About", "Contact"];
 const hashes = ["intro", "practice", "about", "contact"];
 const artPages = [
-  { title: "3D Art", nav: "3D Art", hash: "art", slug: "3d" },
-  { title: "Digital Art", nav: "Digital", hash: "digital-art", slug: "digital" },
-  { title: "Video Editing", nav: "Video", hash: "video-editing", slug: "video" },
-  { title: "Photos", nav: "Photos", hash: "photos", slug: "photos" },
+  {
+    title: "3D objects",
+    nav: "Objects",
+    hash: "art",
+    slug: "3d",
+    kicker: "Object study 001",
+    note: "An early Blender scene, rebuilt as a small object you can turn in the browser.",
+    details: ["First Bloom", "Blender + Three.js", "2026"],
+  },
+  {
+    title: "Digital sketches",
+    nav: "Drawings",
+    hash: "digital-art",
+    slug: "digital",
+    kicker: "Drawing study 001",
+    note: "Loose character studies kept inside the drawing desk—interface, empty space, and all.",
+    details: ["Character studies", "Krita", "In progress"],
+  },
+  {
+    title: "Motion loops",
+    nav: "Motion",
+    hash: "video-editing",
+    slug: "video",
+    kicker: "Motion study 001",
+    note: "A quick timing exercise: one drawn wheel, a short loop, and a little controlled chaos.",
+    details: ["Wheel study", "Procreate", "2.7 sec loop"],
+  },
+  {
+    title: "Photo diary",
+    nav: "Photos",
+    hash: "photos",
+    slug: "photos",
+    kicker: "Personal archive",
+    note: "A quiet shelf for photographs and visual notes. The first roll is still being selected.",
+    details: ["Everyday frames", "Personal", "Opening soon"],
+  },
 ];
 const artHashes = artPages.map(({ hash }) => hash);
 const themePreferenceKey = "vishwesh-portfolio-theme";
@@ -230,12 +273,13 @@ export default function Home() {
       <div className="artboard">
         <header className="site-header">
           <button className="brand" type="button" onClick={() => goTo(0)} aria-label={isY2K ? "Go to art canvas" : "Go to introduction"}>
-            {isY2K ? "Vishwesh" : "Vishwesh Mashruwala"}
+            {isY2K ? "Vishwesh / personal work" : "Vishwesh Mashruwala"}
           </button>
 
           <nav className={`nav${isY2K ? " art-nav" : ""}`} aria-label={isY2K ? "Art sections" : "Portfolio pages"}>
             {navigationLabels.map((label, index) => (
               <button type="button" key={label} onClick={() => goTo(index)} aria-current={page === index ? "page" : undefined}>
+                {isY2K && <span className="nav-number" aria-hidden="true">0{index + 1}</span>}
                 {label}
               </button>
             ))}
@@ -362,17 +406,105 @@ export default function Home() {
             )}
 
             {isY2K && (
-              <div className={`art-coming-page art-coming-${artPages[page].slug}`}>
-                <p className="art-coming-index">{String(page + 1).padStart(2, "0")} / {String(artPages.length).padStart(2, "0")}</p>
-                <div className="art-coming-object" aria-hidden="true">
-                  <span />
-                  <span />
-                  <span />
+              <div
+                className={`art-gallery art-gallery--${artPages[page].slug}`}
+                data-index={String(page + 1).padStart(2, "0")}
+              >
+                <div className="art-gallery-meta">
+                  <span>Vishwesh Mashruwala · studio index</span>
+                  <span>{String(page + 1).padStart(2, "0")} / {String(artPages.length).padStart(2, "0")}</span>
                 </div>
-                <div className="art-coming-copy">
+
+                <aside className="art-story">
+                  <p className="art-kicker">{artPages[page].kicker}</p>
                   <h1>{artPages[page].title}</h1>
-                  <p>Coming soon.</p>
-                </div>
+                  <p className="art-note">{artPages[page].note}</p>
+                  <ul className="art-details" aria-label="Artwork details">
+                    {artPages[page].details.map((detail) => <li key={detail}>{detail}</li>)}
+                  </ul>
+                </aside>
+
+                {page === 0 && (
+                  <div className="art-media art-media--3d">
+                    <div className="art-model-stage">
+                      <ObjArtwork />
+                      <p className="art-model-label"><span aria-hidden="true" /> Interactive object</p>
+                    </div>
+                    <figure className="art-render-card">
+                      <div className="art-render-image">
+                        <Image
+                          src="/first-blend.png"
+                          alt="Final render of Vishwesh's first Blender scene"
+                          fill
+                          priority
+                          sizes="(max-width: 580px) 34vw, 17vw"
+                        />
+                      </div>
+                      <figcaption><span>Final render</span><span>01</span></figcaption>
+                    </figure>
+                    <p className="art-media-note">drag the scene to rotate</p>
+                  </div>
+                )}
+
+                {page === 1 && (
+                  <div className="art-media art-media--digital">
+                    <figure className="art-drawing-window">
+                      <div className="art-drawing-image">
+                        <Image
+                          src="/digital-sketch.png"
+                          alt="Vishwesh's character drawing studies open in Krita"
+                          fill
+                          priority
+                          sizes="(max-width: 580px) 106vw, 62vw"
+                        />
+                      </div>
+                      <figcaption><span>Working file · gi.kra</span><span>4000 × 4000</span></figcaption>
+                    </figure>
+                    <figure className="art-drawing-detail">
+                      <Image
+                        src="/digital-sketch.png"
+                        alt="Detail of a character face study"
+                        fill
+                        sizes="(max-width: 580px) 30vw, 15vw"
+                      />
+                      <figcaption>detail / 01</figcaption>
+                    </figure>
+                  </div>
+                )}
+
+                {page === 2 && (
+                  <div className="art-media art-media--video">
+                    <figure className="art-video-window">
+                      <div className="art-video-screen">
+                        <video
+                          src="/mahoragawheel.mp4"
+                          muted
+                          loop
+                          playsInline
+                          preload="metadata"
+                          onCanPlay={(event) => void event.currentTarget.play()}
+                          aria-label="A rough spinning wheel animation made by Vishwesh"
+                        />
+                        <span className="art-video-live">Looping</span>
+                      </div>
+                      <figcaption><span>Motion test · 24 fps</span><span>00:03</span></figcaption>
+                    </figure>
+                    <p className="art-video-type" aria-hidden="true">spin<br />study</p>
+                  </div>
+                )}
+
+                {page === 3 && (
+                  <div className="art-media art-media--photos" aria-label="Photo diary opening soon">
+                    <div className="art-photo-slot">
+                      <div className="art-photo-phone" aria-hidden="true" />
+                      <p><span>Roll 001</span> still developing</p>
+                    </div>
+                    <div className="art-photo-message">
+                      <span>0 images</span>
+                      <p>Nothing rushed.<br />The photographs arrive when they are ready.</p>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </section>

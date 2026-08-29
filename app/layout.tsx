@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
 import "@fontsource-variable/dm-sans/standard.css";
+import "@fontsource-variable/syne";
 import "./globals.css";
+import "./art-mode.css";
 
 export const viewport: Viewport = {
   width: "device-width",

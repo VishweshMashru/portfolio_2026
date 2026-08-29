@@ -49,34 +49,41 @@ test("uses the Mahoraga video as a sound-enabled Art Mode transition", async () 
   assert.match(transitionVideo.subarray(0, 64).toString("latin1"), /ftyp/);
 });
 
-test("includes four honest coming-soon art sections with original pixel artwork and music", async () => {
-  const [page, styles, track, pixelWordmark, pixelStudy, pixelPhone] = await Promise.all([
+test("includes four authored art sections with supplied artwork, an interactive model, and music", async () => {
+  const [page, artStyles, model, track, render, sketch, obj, mtl, pixelPhone] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/art-mode.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/ObjArtwork.tsx", import.meta.url), "utf8"),
     stat(new URL("../public/art-mode-track.mp3", import.meta.url)),
-    stat(new URL("../public/pixel-wordmark.png", import.meta.url)),
-    stat(new URL("../public/pixel-study-red.png", import.meta.url)),
+    stat(new URL("../public/first-blend.png", import.meta.url)),
+    stat(new URL("../public/digital-sketch.png", import.meta.url)),
+    stat(new URL("../public/first-study.obj", import.meta.url)),
+    stat(new URL("../public/first-study.mtl", import.meta.url)),
     stat(new URL("../public/pixel-phone.png", import.meta.url)),
   ]);
 
   assert.match(page, /Open art mode/);
   assert.match(page, /Return to software portfolio/);
   assert.match(page, /localStorage/);
-  assert.match(page, /3D Art/);
-  assert.match(page, /Digital Art/);
-  assert.match(page, /Video Editing/);
-  assert.match(page, /Photos/);
-  assert.match(page, /Coming soon\./);
+  assert.match(page, /3D objects/);
+  assert.match(page, /Digital sketches/);
+  assert.match(page, /Motion loops/);
+  assert.match(page, /Photo diary/);
+  assert.match(page, /Opening soon/);
+  assert.match(page, /first-blend\.png/);
+  assert.match(page, /digital-sketch\.png/);
   assert.match(page, /art-mode-track\.mp3/);
   assert.match(page, /Pause Art Mode music/);
-  assert.doesNotMatch(page, /Lettering|Kinetic type study|Personal<br \/>practice|My visual/);
-  assert.match(styles, /pixel-wordmark\.png/);
-  assert.match(styles, /pixel-study-red\.png/);
-  assert.match(styles, /pixel-phone\.png/);
-  assert.match(styles, /image-rendering: pixelated/);
-  assert.doesNotMatch(styles, /y2k-dark-hero/);
+  assert.match(artStyles, /art-media--3d/);
+  assert.match(artStyles, /pixel-phone\.png/);
+  assert.match(artStyles, /image-rendering: pixelated/);
+  assert.match(model, /OBJLoader/);
+  assert.match(model, /getObjectByName\("Plane"\)/);
+  assert.match(model, /Drag to rotate/);
   assert.ok(track.size > 0);
-  assert.ok(pixelWordmark.size > 0);
-  assert.ok(pixelStudy.size > 0);
+  assert.ok(render.size > 0);
+  assert.ok(sketch.size > 0);
+  assert.ok(obj.size > 0);
+  assert.ok(mtl.size > 0);
   assert.ok(pixelPhone.size > 0);
 });
