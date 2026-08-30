@@ -21,10 +21,10 @@ const artPages = [
     nav: "Digital",
     hash: "art",
     slug: "digital",
-    kicker: "Krita / drawing study",
-    file: "digital-sketch.png",
-    note: "Character studies from the original Krita working file.",
-    details: ["Character studies", "Krita", "4000 × 4000"],
+    kicker: "Krita / painting study",
+    file: "paint-study.png",
+    note: "An in-progress character painting alongside earlier drawing studies.",
+    details: ["Character painting", "Krita", "4000 × 4000"],
   },
   {
     title: "3D model",
@@ -364,25 +364,25 @@ export default function Home() {
                 {page === 0 && (
                   <div className="art-media art-media--digital">
                     <figure className="art-drawing-window">
-                      <div className="art-drawing-image">
+                      <div className="art-drawing-image art-drawing-image--paint">
                         <Image
-                          src="/digital-sketch.png"
-                          alt="Vishwesh's character drawing studies open in Krita"
+                          src="/paint-study.png"
+                          alt="Vishwesh's in-progress character painting open in Krita"
                           fill
                           priority
                           sizes="(max-width: 580px) 106vw, 62vw"
                         />
                       </div>
-                      <figcaption><span>Working file · gi.kra</span><span>4000 × 4000</span></figcaption>
+                      <figcaption><span>Working file · paint.kra</span><span>4000 × 4000</span></figcaption>
                     </figure>
                     <figure className="art-drawing-detail">
                       <Image
                         src="/digital-sketch.png"
-                        alt="Detail of a character face study"
+                        alt="Earlier character drawing study"
                         fill
                         sizes="(max-width: 580px) 30vw, 15vw"
                       />
-                      <figcaption>detail / 01</figcaption>
+                      <figcaption>earlier study / 01</figcaption>
                     </figure>
                   </div>
                 )}

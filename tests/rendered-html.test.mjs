@@ -40,13 +40,14 @@ test("enters Art Mode without a video transition", async () => {
 });
 
 test("includes four authored art sections with supplied artwork, an interactive model, and music", async () => {
-  const [page, artStyles, model, track, render, sketch, obj, mtl] = await Promise.all([
+  const [page, artStyles, model, track, render, sketch, painting, obj, mtl] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/art-mode.css", import.meta.url), "utf8"),
     readFile(new URL("../app/ObjArtwork.tsx", import.meta.url), "utf8"),
     stat(new URL("../public/art-mode-track.mp3", import.meta.url)),
     stat(new URL("../public/first-blend.png", import.meta.url)),
     stat(new URL("../public/digital-sketch.png", import.meta.url)),
+    stat(new URL("../public/paint-study.png", import.meta.url)),
     stat(new URL("../public/first-study.obj", import.meta.url)),
     stat(new URL("../public/first-study.mtl", import.meta.url)),
   ]);
@@ -65,6 +66,7 @@ test("includes four authored art sections with supplied artwork, an interactive 
   assert.doesNotMatch(page, /Photo diary/);
   assert.match(page, /first-blend\.png/);
   assert.match(page, /digital-sketch\.png/);
+  assert.match(page, /paint-study\.png/);
   assert.match(page, /art-mode-track\.mp3/);
   assert.match(page, /Pause Art Mode music/);
   assert.match(artStyles, /art-media--3d/);
@@ -76,6 +78,7 @@ test("includes four authored art sections with supplied artwork, an interactive 
   assert.ok(track.size > 0);
   assert.ok(render.size > 0);
   assert.ok(sketch.size > 0);
+  assert.ok(painting.size > 0);
   assert.ok(obj.size > 0);
   assert.ok(mtl.size > 0);
 });

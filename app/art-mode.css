@@ -309,7 +309,7 @@
   top: -3px;
   right: 5%;
   color: #555960;
-  content: "gi.kra / paint layer 2 / 73%";
+  content: "paint.kra / paint layer 2 / 58%";
   font-family: var(--archive-ui);
   font-size: clamp(12px, .72vw, 14px);
   text-transform: lowercase;
@@ -337,6 +337,16 @@
   object-fit: cover;
   object-position: center;
   filter: grayscale(.72) saturate(.28) brightness(.69) contrast(1.14) sepia(.04) hue-rotate(145deg);
+}
+.art-drawing-image--paint img {
+  opacity: 0;
+}
+.art-drawing-image--paint {
+  background-color: #d8d7d5;
+  background-image: url("/paint-study.png");
+  background-repeat: no-repeat;
+  background-position: 27% 48%;
+  background-size: 330% auto;
 }
 .art-drawing-detail {
   position: absolute;
@@ -636,6 +646,7 @@
 
   .art-media--digital::after { top: -1px; right: 4%; font-size: 11px; }
   .art-drawing-window { inset: 5% 3% 10%; padding: 4px 4px 22px; }
+  .art-drawing-image--paint { background-position: 29% 48%; background-size: 430% auto; }
   .art-drawing-window figcaption { right: 5px; bottom: 5px; left: 5px; font-size: 11px; }
   .art-drawing-detail { right: 0; bottom: 1%; width: clamp(96px, 29vw, 134px); border-width: 4px; box-shadow: 5px 7px 20px rgba(0, 0, 0, .65); }
   .art-drawing-detail figcaption { font-size: 10.5px; }
