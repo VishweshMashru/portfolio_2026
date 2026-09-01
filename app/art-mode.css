@@ -105,13 +105,6 @@
 .mode-y2k .nav button:hover::after,
 .mode-y2k .nav button[aria-current="page"]::after { right: 0; left: 0; }
 .mode-y2k .nav button[aria-current="page"] { color: #c7c8cc; }
-.mode-y2k .nav-number {
-  color: #793646;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: .82em;
-  font-variant-numeric: tabular-nums;
-}
-.mode-y2k .nav button[aria-current="page"] .nav-number { color: #9c3a4d; }
 
 .mode-y2k .header-actions { gap: clamp(16px, 1.7vw, 28px); }
 .mode-y2k .music-toggle,
@@ -168,22 +161,6 @@
 .art-gallery--video { background: linear-gradient(108deg, #050608 0 36%, #090609 70%, #050608 100%); }
 .art-gallery--misc { background: linear-gradient(108deg, #050608 0 36%, #07090d 70%, #050608 100%); }
 
-.art-gallery-meta {
-  position: absolute;
-  z-index: 9;
-  top: clamp(17px, 2.4vh, 27px);
-  right: clamp(20px, 2.8vw, 52px);
-  left: clamp(20px, 2.8vw, 52px);
-  display: flex;
-  justify-content: space-between;
-  color: #555960;
-  font-family: var(--archive-ui);
-  font-size: clamp(12px, .72vw, 14px);
-  font-weight: 400;
-  letter-spacing: 0;
-  text-transform: lowercase;
-}
-
 .archive-presence {
   position: absolute;
   z-index: 4;
@@ -211,6 +188,7 @@
 }
 .art-gallery--3d .archive-presence img,
 .art-gallery--video .archive-presence img { object-position: 22% 36%; }
+.art-gallery--digital .archive-presence { display: none; }
 .art-gallery--misc .archive-presence { width: 38%; opacity: .2; }
 @keyframes archive-presence-drift {
   from { transform: scale(1.1) translate3d(0, 0, 0); }
@@ -220,80 +198,33 @@
 .art-story {
   position: absolute;
   z-index: 8;
-  top: 13%;
-  bottom: 9%;
-  left: clamp(24px, 4.2vw, 78px);
-  width: min(29vw, 445px);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
+  right: auto;
+  bottom: 5%;
+  left: clamp(20px, 3.2vw, 58px);
+  width: auto;
   pointer-events: none;
 }
-.art-kicker {
-  margin: 0 0 clamp(16px, 2.2vh, 24px);
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: #686c73;
-  font-family: var(--archive-ui);
-  font-size: clamp(13px, .78vw, 15px);
-  font-weight: 400;
-  letter-spacing: 0;
-  text-transform: lowercase;
-}
-.art-kicker::before { content: none; }
 .art-story h1 {
   max-width: 7.7ch;
   margin: 0;
   color: #c9cace;
   font-family: var(--archive-display);
-  font-size: clamp(82px, 8.2vw, 148px);
+  font-size: clamp(58px, 6vw, 106px);
   font-weight: 400;
-  line-height: .84;
-  letter-spacing: -.07em;
+  line-height: .88;
+  letter-spacing: -.065em;
   text-transform: lowercase;
   text-wrap: balance;
   text-shadow: 0 16px 44px rgba(0, 0, 0, .56);
 }
-.art-note {
-  max-width: 36ch;
-  margin: clamp(20px, 2.8vh, 30px) 0 0;
-  color: #898c92;
-  font-family: var(--archive-display);
-  font-size: clamp(18px, 1.15vw, 21px);
-  font-weight: 400;
-  line-height: 1.5;
-}
-.art-details {
-  margin: clamp(19px, 2.6vh, 27px) 0 0;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 18px;
-  list-style: none;
-}
-.art-details li {
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  color: #60646b;
-  font-family: var(--archive-ui);
-  font-size: clamp(13px, .78vw, 15px);
-  font-weight: 400;
-  letter-spacing: 0;
-  text-transform: lowercase;
-}
-.art-details li + li::before { content: none; }
 
 .art-media {
   position: absolute;
   z-index: 3;
-  top: 6%;
-  right: 3%;
-  bottom: 6%;
-  left: 34%;
+  top: 2.5%;
+  right: 2%;
+  bottom: 2.5%;
+  left: 18%;
   animation: archive-media-enter .48s ease-out both;
 }
 @keyframes archive-media-enter {
@@ -301,26 +232,14 @@
   to { opacity: 1; transform: none; filter: none; }
 }
 
-/* Drawing: the working file is the page's main image. */
-.art-media--digital { top: 8%; right: 2.5%; bottom: 7%; left: 36%; border: 0; background: transparent; box-shadow: none; }
-.art-media--digital::after {
-  position: absolute;
-  z-index: 8;
-  top: -3px;
-  right: 5%;
-  color: #555960;
-  content: "paint.kra / paint layer 2 / 58%";
-  font-family: var(--archive-ui);
-  font-size: clamp(12px, .72vw, 14px);
-  text-transform: lowercase;
-  pointer-events: none;
-}
+/* Drawing: the image, not the interface, is the page. */
+.art-media--digital { left: 18%; border: 0; background: transparent; box-shadow: none; }
 .art-drawing-window {
   position: absolute;
   z-index: 3;
-  inset: 5% 6% 9% 0;
+  inset: 0 1% 3% 0;
   margin: 0;
-  padding: 4px 4px 27px;
+  padding: 4px;
   border: 1px solid #2f3339;
   background: #0a0c0f;
   box-shadow: 8px 12px 36px rgba(0, 0, 0, .55);
@@ -369,21 +288,8 @@
   transform: scale(2.5);
   transform-origin: 63% 51%;
 }
-.art-drawing-detail figcaption {
-  position: absolute;
-  z-index: 2;
-  right: 4px;
-  bottom: 4px;
-  padding: 4px 5px;
-  background: rgba(5, 6, 8, .84);
-  color: #a0a3a9;
-  font-family: var(--archive-ui);
-  font-size: 12px;
-  text-transform: lowercase;
-}
-
 /* 3D: a bright object held inside the dark archive. */
-.art-media--3d { top: 3%; right: 1%; bottom: 3%; left: 30%; overflow: visible; border: 0; background: transparent; box-shadow: none; }
+.art-media--3d { right: 1%; left: 11%; overflow: visible; border: 0; background: transparent; box-shadow: none; }
 .art-media--3d::before { content: none; }
 .art-model-stage { position: absolute; inset: 0; }
 .art-model-stage .obj-artwork-shell { inset: 0 0 0 8%; overflow: visible; pointer-events: none; }
@@ -402,17 +308,6 @@
   font-weight: 400;
   text-transform: lowercase;
 }
-.art-model-label {
-  position: absolute;
-  z-index: 5;
-  top: 8%;
-  right: 6%;
-  margin: 0;
-  color: #5d6168;
-  font-family: var(--archive-ui);
-  font-size: clamp(12px, .72vw, 14px);
-  text-transform: lowercase;
-}
 .art-render-card {
   position: absolute;
   z-index: 6;
@@ -420,7 +315,7 @@
   left: 6%;
   width: clamp(150px, 18vw, 270px);
   margin: 0;
-  padding: 5px 5px 25px;
+  padding: 5px;
   border: 1px solid #41454c;
   background: #090b0e;
   box-shadow: 8px 10px 30px rgba(0, 0, 0, .6);
@@ -429,44 +324,14 @@
 }
 .art-render-image { width: 100%; aspect-ratio: 1; position: relative; overflow: hidden; background: #0e0f13; }
 .art-render-image img { object-fit: cover; }
-.art-render-card figcaption,
-.art-drawing-window figcaption,
-.art-video-window figcaption {
-  position: absolute;
-  right: 7px;
-  bottom: 7px;
-  left: 7px;
-  display: flex;
-  justify-content: space-between;
-  color: #777a81;
-  font-family: var(--archive-ui);
-  font-size: clamp(12px, .72vw, 14px);
-  font-weight: 400;
-  text-transform: lowercase;
-}
-.art-media-note {
-  position: absolute;
-  z-index: 5;
-  right: 7%;
-  bottom: 6%;
-  margin: 0;
-  color: #6f737a;
-  font-family: var(--archive-ui);
-  font-size: clamp(12px, .72vw, 14px);
-  text-transform: lowercase;
-}
-
 /* Video editing: reserved for the user's forthcoming reel. */
-.art-media--video { top: 7%; right: 3%; bottom: 7%; left: 39%; overflow: hidden; border: 0; background: transparent; box-shadow: none; }
+.art-media--video { left: 22%; overflow: hidden; border: 0; background: transparent; box-shadow: none; }
 .art-video-window {
   position: absolute;
   z-index: 3;
-  top: 8%;
-  right: 4%;
-  bottom: 13%;
-  left: 4%;
+  inset: 3%;
   margin: 0;
-  padding: 5px 5px 27px;
+  padding: 5px;
   border: 1px solid #30343a;
   background: #08090c;
   box-shadow: 8px 12px 36px rgba(0, 0, 0, .58);
@@ -487,34 +352,21 @@
   justify-content: flex-end;
   background: linear-gradient(145deg, #050608, #090a0d);
 }
-.art-video-empty > span {
-  color: #797c83;
-  font-family: var(--archive-ui);
-  font-size: clamp(12px, .72vw, 14px);
-  text-transform: lowercase;
-}
 .art-video-empty strong {
-  margin-top: 12px;
   color: #c2c3c7;
   font-family: var(--archive-display);
-  font-size: clamp(48px, 5.4vw, 94px);
+  font-size: clamp(42px, 4.8vw, 82px);
   font-weight: 400;
   letter-spacing: -.06em;
   line-height: .9;
   text-transform: lowercase;
 }
-.art-video-empty p {
-  margin: 18px 0 0;
-  color: #7e8188;
-  font-family: var(--archive-display);
-  font-size: clamp(16px, 1vw, 19px);
-}
 
 /* Miscellaneous: photography, CAD, PCBs, and other work. */
-.art-media--misc { top: 7%; right: 3%; bottom: 7%; left: 38%; overflow: hidden; border: 0; background: transparent; box-shadow: none; }
+.art-media--misc { left: 22%; overflow: hidden; border: 0; background: transparent; box-shadow: none; }
 .art-misc-grid {
   position: absolute;
-  inset: 6% 2% 8%;
+  inset: 3%;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1px;
@@ -530,26 +382,13 @@
   justify-content: flex-end;
   background: rgba(6, 8, 10, .97);
 }
-.art-misc-item > span {
-  color: #843449;
-  font-family: var(--archive-ui);
-  font-size: clamp(12px, .72vw, 14px);
-  font-variant-numeric: tabular-nums;
-}
 .art-misc-item strong {
-  margin-top: 12px;
   color: #bbbdc2;
   font-family: var(--archive-display);
   font-size: clamp(30px, 2.8vw, 50px);
   font-weight: 400;
   letter-spacing: -.045em;
   line-height: .96;
-}
-.art-misc-item p {
-  margin: 16px 0 0;
-  color: #73777e;
-  font-family: var(--archive-display);
-  font-size: clamp(15px, .9vw, 17px);
 }
 
 .mode-y2k .pagination {
@@ -583,10 +422,11 @@
 }
 
 @media (max-width: 980px) {
-  .art-story { width: 33vw; }
-  .art-story h1 { font-size: clamp(74px, 9vw, 112px); }
-  .art-media { left: 36%; }
-  .art-media--3d { left: 32%; }
+  .art-story h1 { font-size: clamp(54px, 7vw, 82px); }
+  .art-media { left: 16%; }
+  .art-media--3d { left: 8%; }
+  .art-media--video,
+  .art-media--misc { left: 20%; }
   .art-render-card { width: clamp(132px, 18vw, 182px); }
   .art-drawing-detail { width: clamp(108px, 16vw, 162px); }
   .archive-presence { width: 36%; }
@@ -617,52 +457,33 @@
   .mode-y2k .nav button + button { min-height: 0; padding: 9px 2px 11px; justify-content: center; gap: 4px; font-size: 12px; }
   .mode-y2k .nav button::after { bottom: 1px; left: 32%; right: 68%; }
   .mode-y2k .nav button[aria-current="page"]::after { left: 32%; right: 32%; }
-  .mode-y2k .nav-number { font-size: 9px; }
-
-  .art-gallery-meta { top: 10px; right: 15px; left: 15px; font-size: 11.5px; }
-  .art-gallery-meta span:first-child { max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .archive-presence { z-index: 5; top: 0; right: -13%; bottom: auto; width: 68%; height: 56%; opacity: .14; }
   .art-gallery--misc .archive-presence { width: 73%; opacity: .18; }
 
-  .art-story { top: auto; right: 16px; bottom: 3%; left: 16px; width: auto; height: 42%; display: block; }
-  .art-kicker { margin-bottom: 10px; font-size: 12.5px; }
-  .art-story h1 { max-width: 8.2ch; font-size: clamp(56px, 15.7vw, 76px); line-height: .86; }
-  .art-note { max-width: 37ch; margin-top: 13px; font-size: 16px; line-height: 1.42; }
-  .art-details { margin-top: 12px; gap: 14px; }
-  .art-details li { font-size: 12.5px; }
+  .art-story { right: 16px; bottom: 2%; left: 16px; width: auto; }
+  .art-story h1 { max-width: 8.2ch; font-size: clamp(48px, 13.5vw, 66px); line-height: .88; }
 
   .art-media,
   .art-media--3d,
   .art-media--digital,
   .art-media--video,
-  .art-media--misc { top: 4%; right: 15px; bottom: auto; left: 15px; height: 49%; }
-  .art-media--3d { right: 5px; left: 5px; }
+  .art-media--misc { top: 2%; right: 8px; bottom: auto; left: 8px; height: 75%; }
+  .art-media--3d { right: 0; left: 0; }
   .art-model-stage .obj-artwork-shell { inset: -3% 0 0; }
-  .art-model-label { top: 8px; right: 12px; font-size: 11.5px; }
-  .art-model-stage .obj-artwork-status,
-  .art-media-note { display: none; }
-  .art-render-card { bottom: 4%; left: 3%; width: clamp(106px, 31vw, 144px); padding: 4px 4px 20px; box-shadow: 5px 7px 20px rgba(0, 0, 0, .62); }
-  .art-render-card figcaption { right: 5px; bottom: 5px; left: 5px; font-size: 11px; }
+  .art-model-stage .obj-artwork-status { display: none; }
+  .art-render-card { bottom: 4%; left: 3%; width: clamp(106px, 31vw, 144px); padding: 4px; box-shadow: 5px 7px 20px rgba(0, 0, 0, .62); }
 
-  .art-media--digital::after { top: -1px; right: 4%; font-size: 11px; }
-  .art-drawing-window { inset: 5% 3% 10%; padding: 4px 4px 22px; }
+  .art-drawing-window { inset: 0 0 3%; padding: 3px; }
   .art-drawing-image--paint { background-position: 29% 48%; background-size: 430% auto; }
-  .art-drawing-window figcaption { right: 5px; bottom: 5px; left: 5px; font-size: 11px; }
-  .art-drawing-detail { right: 0; bottom: 1%; width: clamp(96px, 29vw, 134px); border-width: 4px; box-shadow: 5px 7px 20px rgba(0, 0, 0, .65); }
-  .art-drawing-detail figcaption { font-size: 10.5px; }
+  .art-drawing-detail { right: 0; bottom: 0; width: clamp(96px, 29vw, 134px); border-width: 4px; box-shadow: 5px 7px 20px rgba(0, 0, 0, .65); }
 
-  .art-video-window { top: 5%; right: 1%; bottom: 9%; left: 1%; padding: 4px 4px 22px; }
-  .art-video-window figcaption { right: 5px; bottom: 5px; left: 5px; font-size: 11px; }
-  .art-video-empty { padding: 20px; }
-  .art-video-empty > span { font-size: 11.5px; }
+  .art-video-window { inset: 2%; padding: 4px; }
+  .art-video-empty { padding: 18px; }
   .art-video-empty strong { font-size: clamp(42px, 12vw, 58px); }
-  .art-video-empty p { margin-top: 12px; font-size: 14px; }
 
-  .art-misc-grid { inset: 4% 0 7%; }
+  .art-misc-grid { inset: 2%; }
   .art-misc-item { padding: 14px; }
-  .art-misc-item > span { font-size: 11px; }
-  .art-misc-item strong { margin-top: 7px; font-size: clamp(21px, 5.8vw, 29px); }
-  .art-misc-item p { margin-top: 8px; font-size: 12px; }
+  .art-misc-item strong { font-size: clamp(21px, 5.8vw, 29px); }
 
   .mode-y2k .pagination { padding: 0 15px; }
   .mode-y2k .pagination > p { font-size: 12px; }
@@ -676,22 +497,19 @@
   .mode-y2k .nav button,
   .mode-y2k .music-toggle,
   .mode-y2k .theme-toggle { font-size: 10px; }
-  .art-gallery-meta { top: 7px; font-size: 9.5px; }
-  .art-story { top: 11%; bottom: 5%; left: 20px; width: 34vw; }
-  .art-kicker { margin-bottom: 7px; font-size: 10px; }
-  .art-story h1 { font-size: clamp(52px, 7.5vw, 70px); }
-  .art-note { margin-top: 9px; font-size: 13px; line-height: 1.4; }
-  .art-details { margin-top: 8px; }
-  .art-details li { font-size: 10px; }
-  .art-media { top: 4%; right: 2%; bottom: 4%; left: 39%; }
+  .art-story { bottom: 3%; left: 20px; }
+  .art-story h1 { font-size: clamp(42px, 6vw, 58px); }
+  .art-media { top: 2%; right: 1%; bottom: 2%; left: 18%; }
+  .art-media--3d { left: 8%; }
+  .art-media--video,
+  .art-media--misc { left: 22%; }
   .archive-presence { width: 31%; }
-  .art-render-card { width: clamp(86px, 14vw, 120px); padding: 4px 4px 17px; }
+  .art-render-card { width: clamp(86px, 14vw, 120px); padding: 4px; }
   .art-drawing-detail { width: clamp(78px, 14vw, 108px); border-width: 4px; }
   .art-video-empty { padding: 16px; }
   .art-video-empty strong { font-size: 36px; }
   .art-misc-item { padding: 10px; }
-  .art-misc-item strong { margin-top: 5px; font-size: 20px; }
-  .art-misc-item p { margin-top: 5px; font-size: 9px; }
+  .art-misc-item strong { font-size: 20px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

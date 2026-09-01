@@ -21,40 +21,24 @@ const artPages = [
     nav: "Digital",
     hash: "art",
     slug: "digital",
-    kicker: "Krita / painting study",
-    file: "paint-study.png",
-    note: "An in-progress character painting alongside earlier drawing studies.",
-    details: ["Character painting", "Krita", "4000 × 4000"],
   },
   {
     title: "3D model",
     nav: "3D",
     hash: "3d-model",
     slug: "3d",
-    kicker: "Blender / object study",
-    file: "first-blend.obj",
-    note: "An interactive Blender study alongside its finished render.",
-    details: ["First Bloom", "Blender / WebGL", "Interactive"],
   },
   {
     title: "Video editing",
     nav: "Video",
     hash: "video-editing",
     slug: "video",
-    kicker: "Video / editing reel",
-    file: "video-file-pending",
-    note: "Video editing work will be added when the final file is available.",
-    details: ["Video editing", "Reel pending"],
   },
   {
     title: "Miscellaneous",
     nav: "Misc.",
     hash: "miscellaneous",
     slug: "misc",
-    kicker: "Other files",
-    file: "miscellaneous",
-    note: "Photography, CAD designs, PCB layouts, and other experiments.",
-    details: ["Photography", "CAD", "PCBs", "Other work"],
   },
 ];
 const artHashes = artPages.map(({ hash }) => hash);
@@ -202,13 +186,12 @@ export default function Home() {
       <div className="artboard">
         <header className="site-header">
           <button className="brand" type="button" onClick={() => goTo(0)} aria-label={isY2K ? "Go to art canvas" : "Go to introduction"}>
-            {isY2K ? "Vishwesh / art archive" : "Vishwesh Mashruwala"}
+            {isY2K ? "Vishwesh" : "Vishwesh Mashruwala"}
           </button>
 
           <nav className={`nav${isY2K ? " art-nav" : ""}`} aria-label={isY2K ? "Art sections" : "Portfolio pages"}>
             {navigationLabels.map((label, index) => (
               <button type="button" key={label} onClick={() => goTo(index)} aria-current={page === index ? "page" : undefined}>
-                {isY2K && <span className="nav-number" aria-hidden="true">0{index + 1}</span>}
                 {label}
               </button>
             ))}
@@ -337,11 +320,6 @@ export default function Home() {
               <div
                 className={`art-gallery art-gallery--${artPages[page].slug}`}
               >
-                <div className="art-gallery-meta">
-                  <span>{artPages[page].file}</span>
-                  <span>{String(page + 1).padStart(2, "0")} / {String(artPages.length).padStart(2, "0")}</span>
-                </div>
-
                 <div className="archive-presence" aria-hidden="true">
                   <Image
                     src="/digital-sketch.png"
@@ -353,12 +331,7 @@ export default function Home() {
                 </div>
 
                 <aside className="art-story">
-                  <p className="art-kicker">{artPages[page].kicker}</p>
                   <h1>{artPages[page].title}</h1>
-                  <p className="art-note">{artPages[page].note}</p>
-                  <ul className="art-details" aria-label="Artwork details">
-                    {artPages[page].details.map((detail) => <li key={detail}>{detail}</li>)}
-                  </ul>
                 </aside>
 
                 {page === 0 && (
@@ -373,7 +346,6 @@ export default function Home() {
                           sizes="(max-width: 580px) 106vw, 62vw"
                         />
                       </div>
-                      <figcaption><span>Working file · paint.kra</span><span>4000 × 4000</span></figcaption>
                     </figure>
                     <figure className="art-drawing-detail">
                       <Image
@@ -382,7 +354,6 @@ export default function Home() {
                         fill
                         sizes="(max-width: 580px) 30vw, 15vw"
                       />
-                      <figcaption>earlier study / 01</figcaption>
                     </figure>
                   </div>
                 )}
@@ -391,7 +362,6 @@ export default function Home() {
                   <div className="art-media art-media--3d">
                     <div className="art-model-stage">
                       <ObjArtwork />
-                      <p className="art-model-label">Interactive object</p>
                     </div>
                     <figure className="art-render-card">
                       <div className="art-render-image">
@@ -403,9 +373,7 @@ export default function Home() {
                           sizes="(max-width: 580px) 34vw, 17vw"
                         />
                       </div>
-                      <figcaption><span>Final render</span><span>01</span></figcaption>
                     </figure>
-                    <p className="art-media-note">drag to rotate</p>
                   </div>
                 )}
 
@@ -413,11 +381,8 @@ export default function Home() {
                   <div className="art-media art-media--video">
                     <figure className="art-video-window">
                       <div className="art-video-screen art-video-empty">
-                        <span>Video file pending</span>
-                        <strong>Editing reel</strong>
-                        <p>The finished video will appear here.</p>
+                        <strong>Video pending</strong>
                       </div>
-                      <figcaption><span>Video editing</span><span>File not added</span></figcaption>
                     </figure>
                   </div>
                 )}
@@ -425,16 +390,9 @@ export default function Home() {
                 {page === 3 && (
                   <div className="art-media art-media--misc" aria-label="Miscellaneous work archive">
                     <div className="art-misc-grid">
-                      {[
-                        ["01", "Photography"],
-                        ["02", "CAD design"],
-                        ["03", "PCB layouts"],
-                        ["04", "Other work"],
-                      ].map(([index, label]) => (
+                      {["Photography", "CAD design", "PCB layouts", "Other work"].map((label) => (
                         <article className="art-misc-item" key={label}>
-                          <span>{index}</span>
                           <strong>{label}</strong>
-                          <p>Files will be added</p>
                         </article>
                       ))}
                     </div>
