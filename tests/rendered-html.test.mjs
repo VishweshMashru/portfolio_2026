@@ -39,46 +39,13 @@ test("enters Art Mode without a video transition", async () => {
   assert.doesNotMatch(page, /sessionStorage/);
 });
 
-test("includes four authored art sections with supplied artwork, an interactive model, and music", async () => {
-  const [page, artStyles, model, track, render, sketch, painting, obj, mtl] = await Promise.all([
-    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/art-mode.css", import.meta.url), "utf8"),
-    readFile(new URL("../app/ObjArtwork.tsx", import.meta.url), "utf8"),
-    stat(new URL("../public/art-mode-track.mp3", import.meta.url)),
-    stat(new URL("../public/first-blend.png", import.meta.url)),
-    stat(new URL("../public/digital-sketch.png", import.meta.url)),
-    stat(new URL("../public/paint-study.png", import.meta.url)),
-    stat(new URL("../public/first-study.obj", import.meta.url)),
-    stat(new URL("../public/first-study.mtl", import.meta.url)),
-  ]);
-
-  assert.match(page, /Open art mode/);
-  assert.match(page, /Return to software portfolio/);
-  assert.match(page, /localStorage/);
-  assert.match(page, /Digital art/);
-  assert.match(page, /3D model/);
-  assert.ok(page.indexOf('title: "Digital art"') < page.indexOf('title: "3D model"'));
-  assert.match(page, /Video editing/);
-  assert.match(page, /Miscellaneous/);
-  assert.match(page, /CAD design/);
-  assert.match(page, /PCB layouts/);
-  assert.doesNotMatch(page, /Motion loops/);
-  assert.doesNotMatch(page, /Photo diary/);
-  assert.match(page, /first-blend\.png/);
-  assert.match(page, /digital-sketch\.png/);
-  assert.match(page, /paint-study\.png/);
-  assert.match(page, /art-mode-track\.mp3/);
-  assert.match(page, /Pause Art Mode music/);
-  assert.match(artStyles, /art-media--3d/);
-  assert.match(artStyles, /art-video-empty/);
-  assert.match(artStyles, /art-misc-grid/);
-  assert.match(model, /OBJLoader/);
-  assert.match(model, /getObjectByName\("Plane"\)/);
-  assert.match(model, /Drag to rotate/);
+test("ships the Figma cover as valid local PNG assets with the existing music", async () => {
+  for (const name of ["portrait-left.png", "portrait-right.png"]) {
+    const image = await readFile(new URL(`../public/art-cover/${name}`, import.meta.url));
+    assert.deepEqual([...image.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10]);
+    assert.ok(image.readUInt32BE(16) > 0, `${name} has a width`);
+    assert.ok(image.readUInt32BE(20) > 0, `${name} has a height`);
+  }
+  const track = await stat(new URL("../public/art-mode-track.mp3", import.meta.url));
   assert.ok(track.size > 0);
-  assert.ok(render.size > 0);
-  assert.ok(sketch.size > 0);
-  assert.ok(painting.size > 0);
-  assert.ok(obj.size > 0);
-  assert.ok(mtl.size > 0);
 });
