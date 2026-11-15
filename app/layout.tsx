@@ -24,7 +24,7 @@ export async function generateMetadata(): Promise<Metadata> {
       default: "Vishwesh Mashruwala — Portfolio",
       template: "%s — Vishwesh Mashruwala",
     },
-    description: "Portfolio of Vishwesh Mashruwala, a self-employed software developer in India with interests in hardware, mechanics, visual work, and Mandarin.",
+    description: "Portfolio of Vishwesh Mashruwala, a self-employed software developer in Surat, India with interests in hardware, mechanics, visual work, and Mandarin.",
     applicationName: "Vishwesh Mashruwala",
     authors: [{ name: "Vishwesh Mashruwala" }],
     keywords: ["Vishwesh Mashruwala", "software developer", "hardware", "mechanical engineering", "video editing", "portfolio"],

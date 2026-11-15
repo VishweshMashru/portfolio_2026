@@ -35,7 +35,7 @@ test("enters Art Mode without a video transition", async () => {
   assert.doesNotMatch(page, /art-transition-video/);
   assert.doesNotMatch(page, /Skip to Art mode/);
   assert.doesNotMatch(page, /finishArtTransition/);
-  assert.match(page, /track\.volume = \.48/);
+  assert.match(page, /track\.volume = (?:0)?\.48/);
   assert.doesNotMatch(page, /sessionStorage/);
 });
 
