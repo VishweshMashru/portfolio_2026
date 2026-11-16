@@ -410,6 +410,7 @@ input:focus-visible {
   color: var(--muted);
   margin-bottom: 10px !important;
 }
+.section-heading h1,
 .section-heading h2 {
   font-size: 37px;
   line-height: 1.2;
@@ -1174,6 +1175,7 @@ body:has(.search-dialog[open]) {
   .eyebrow {
     font-size: 10px;
   }
+  .section-heading h1,
   .section-heading h2 {
     font-size: 31px;
   }

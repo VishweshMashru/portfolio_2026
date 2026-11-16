@@ -1,5 +1,4 @@
-/* Art Mode uses the exact profile markup, layout, fonts and responsive rules.
-   Only the palette and surface treatments change. */
+/* The art gallery shares the profile typography, navigation and card styles. */
 .portfolio.art-mode {
   --paper: #f7f1fa;
   --surface: #fffaff;
@@ -229,4 +228,181 @@
 }
 .art-mode .art-invitation-image::after {
   background: linear-gradient(90deg, var(--soft), transparent 60%);
+}
+
+.gallery-intro {
+  display: grid;
+  grid-template-columns: 1fr 440px;
+  gap: 40px;
+  align-items: center;
+  padding: 0 20px;
+}
+.gallery-intro .section-intro {
+  margin-bottom: 0 !important;
+}
+.gallery-soundtrack {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 23px;
+  padding: 18px 22px;
+}
+.gallery-soundtrack .art-player {
+  margin-top: 0;
+  max-width: none;
+}
+.gallery-soundtrack .art-volume {
+  margin-top: -6px;
+}
+.gallery-section {
+  margin-top: 65px;
+}
+.artwork-open {
+  width: 100%;
+  display: block;
+  padding: 0;
+  text-align: left;
+  background: transparent;
+  color: var(--ink);
+}
+.artwork-image {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: var(--soft);
+}
+.artwork-image img {
+  object-fit: contain;
+}
+.artwork-card .card-title-row > svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: var(--muted);
+}
+.artwork-card .eyebrow {
+  font-size: 10px;
+}
+.artwork-card h3 {
+  font-size: 25px;
+}
+.gallery-model {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: var(--soft);
+}
+.gallery-model > img {
+  object-fit: contain;
+  opacity: 0.6;
+}
+.gallery-model > button {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+}
+.obj-artwork-shell,
+.obj-artwork {
+  position: absolute;
+  inset: 0;
+}
+.obj-artwork canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+}
+.obj-artwork canvas.is-dragging {
+  cursor: grabbing;
+}
+.obj-artwork-status {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  right: 12px;
+  text-align: center;
+  pointer-events: none;
+  color: var(--muted);
+  font-size: 12px;
+}
+.obj-artwork-fallback {
+  position: absolute;
+  inset: 0;
+  background: url("/first-blend.png") center / contain no-repeat;
+}
+.artwork-viewer {
+  width: min(1200px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  padding: 22px;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+}
+.artwork-viewer::backdrop {
+  background: #171020b8;
+  backdrop-filter: blur(6px);
+}
+.artwork-viewer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.artwork-viewer-header h2 {
+  font-size: 22px;
+  letter-spacing: -0.035em;
+}
+.artwork-viewer-image {
+  position: relative;
+  height: min(68dvh, 760px);
+  background: var(--soft);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.artwork-viewer-image img {
+  object-fit: contain;
+}
+.artwork-viewer > .button {
+  margin-top: 16px;
+}
+@media (max-width: 1000px) {
+  .gallery-intro {
+    grid-template-columns: 1fr 360px;
+    gap: 25px;
+  }
+}
+@media (max-width: 700px) {
+  .gallery-intro {
+    grid-template-columns: 1fr;
+    gap: 25px;
+    padding: 0 5px;
+  }
+  .gallery-soundtrack {
+    padding: 18px;
+  }
+  .gallery-section {
+    margin-top: 50px;
+  }
+  .artwork-card h3 {
+    font-size: 24px;
+  }
+  .artwork-viewer {
+    padding: 16px;
+  }
+  .artwork-viewer-header h2 {
+    font-size: 18px;
+  }
+}
+.artwork-open:focus-visible {
+  outline-offset: -4px;
+}
+.obj-artwork:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: -4px;
+}
+.obj-artwork canvas {
+  touch-action: pan-y;
 }

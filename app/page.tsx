@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import ArtMode from "./ArtMode";
+import ArtGallery from "./ArtGallery";
 import Icon, { type IconName } from "./components/Icon";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -12,6 +13,9 @@ const artHashes = [
   "3d-model",
   "video-editing",
   "miscellaneous",
+  "paint-study",
+  "character-sketch",
+  "first-blender-scene",
 ];
 const themePreferenceKey = "vishwesh-portfolio-theme";
 const colorPreferenceKey = "vishwesh-portfolio-color";
@@ -154,18 +158,22 @@ export default function Home() {
   useEffect(() => {
     const syncHash = (initial = false) => {
       const hash = window.location.hash.slice(1);
+      const profileLink =
+        ["intro", "practice", "about", "contact"].includes(hash) ||
+        hash.startsWith("practice-");
       const art =
-        artHashes.includes(hash) ||
-        (initial
-          ? readLocalStorage(themePreferenceKey) === "y2k"
-          : artActive.current);
+        !profileLink &&
+        (artHashes.includes(hash) ||
+          (initial
+            ? readLocalStorage(themePreferenceKey) === "y2k"
+            : artActive.current));
       setMode(art);
       if (art) {
         writeLocalStorage(themePreferenceKey, "y2k");
-        if (!hash || artHashes.includes(hash))
+        if (!hash || ["video-editing", "miscellaneous"].includes(hash))
           window.history.replaceState(null, "", "#art");
       }
-      if (hash && !artHashes.includes(hash))
+      if (hash)
         requestAnimationFrame(() =>
           document.getElementById(hash)?.scrollIntoView(),
         );
@@ -242,7 +250,11 @@ export default function Home() {
   }, []);
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if (isArtMode && event.key === "Escape" && !dialogRef.current?.open) {
+      if (
+        isArtMode &&
+        event.key === "Escape" &&
+        !document.querySelector("dialog[open]")
+      ) {
         exitArtMode();
         return;
       }
@@ -254,10 +266,33 @@ export default function Home() {
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [exitArtMode, isArtMode, openSearch]);
-  const results = searchItems.filter((item) =>
-    `${item.label} ${item.description}`
-      .toLowerCase()
-      .includes(query.trim().toLowerCase()),
+  const gallerySearchItems = [
+    {
+      label: "Digital art",
+      description: "Drawings and paintings in Krita",
+      hash: "digital-art",
+    },
+    {
+      label: "Character painting",
+      description: "Digital painting study",
+      hash: "paint-study",
+    },
+    {
+      label: "Character sketches",
+      description: "Earlier character drawing study",
+      hash: "character-sketch",
+    },
+    {
+      label: "Blender studies",
+      description: "First Blender scene and interactive model",
+      hash: "3d-model",
+    },
+  ];
+  const results = (isArtMode ? gallerySearchItems : searchItems).filter(
+    (item) =>
+      `${item.label} ${item.description}`
+        .toLowerCase()
+        .includes(query.trim().toLowerCase()),
   );
 
   return (
@@ -279,21 +314,27 @@ export default function Home() {
           setTrackDuration(Number.isFinite(duration) ? duration : 0);
         }}
       />
-      <a href="#intro" className="skip-link">
+      <a href={isArtMode ? "#art" : "#intro"} className="skip-link">
         Skip to content
       </a>
       <header className="floating-nav">
         <nav aria-label="Portfolio navigation">
           <a
             className="nav-monogram"
-            href="#intro"
-            aria-label="Vishwesh Mashruwala — introduction"
+            href={isArtMode ? "#art" : "#intro"}
+            aria-label={
+              isArtMode
+                ? "Art gallery introduction"
+                : "Vishwesh Mashruwala — introduction"
+            }
           >
             vm<span>.</span>
           </a>
-          <a href="#practice">Practice</a>
-          <a className="nav-about" href="#about">
-            About
+          <a href={isArtMode ? "#digital-art" : "#practice"}>
+            {isArtMode ? "Digital" : "Practice"}
+          </a>
+          <a className="nav-about" href={isArtMode ? "#3d-model" : "#about"}>
+            {isArtMode ? "3D" : "About"}
           </a>
           <button
             ref={artTrigger}
@@ -334,219 +375,9 @@ export default function Home() {
         className="portfolio-container"
         aria-label={isArtMode ? "Art Mode" : "Portfolio"}
       >
-        <section id="intro" className="intro-section">
-          <div className="hero-banner">
-            <Image
-              src="/hero-vm-glass.png"
-              alt="Blue glass VM monogram, Vishwesh’s original portfolio artwork"
-              fill
-              priority
-              sizes="(max-width: 1200px) 100vw, 1120px"
-            />
-            <span className="banner-note">
-              A space for the things I make & learn.
-            </span>
-            <LocalClock />
-          </div>
-          <div className="hero-body">
-            <div className="identity-row">
-              <div className="profile-monogram" aria-hidden="true">
-                vm<span>.</span>
-              </div>
-              <div>
-                <p className="identity-meta">Software · self-employed</p>
-                <h1>
-                  Hi, I’m Vishwesh<span> — I like making things.</span>
-                </h1>
-              </div>
-            </div>
-            <p className="hero-disciplines">
-              Software. Hardware.
-              <br className="mobile-break" /> <span>Mechanics. Visuals.</span>
-            </p>
-            <p className="hero-description">
-              I&apos;m Vishwesh, 23, based in Surat, India. Software is my main
-              area; the rest are subjects I&apos;m actively learning or
-              practising.
-            </p>
-            <div className="hero-actions">
-              <a className="button primary" href="#practice">
-                <Icon name="code" />
-                View areas
-                <Icon name="arrow" />
-              </a>
-              <a className="button" href="#contact">
-                <Icon name="mail" />
-                Get in touch
-              </a>
-            </div>
-            <div className="contact-icons">
-              <a
-                href="mailto:vishweshmash86@gmail.com"
-                aria-label="Email Vishwesh"
-              >
-                <Icon name="mail" />
-              </a>
-              <a href="tel:+919537517519" aria-label="Call Vishwesh">
-                <Icon name="phone" />
-              </a>
-              <a
-                href="https://wa.me/919537517519"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="WhatsApp Vishwesh"
-              >
-                <Icon name="chat" />
-              </a>
-            </div>
-            <div className="facts-grid">
-              <div>
-                <Icon name="code" />
-                <strong>Software</strong>
-                <span>Main area</span>
-              </div>
-              <div>
-                <Icon name="briefcase" />
-                <strong>Independent</strong>
-                <span>Self-employed</span>
-              </div>
-              <div>
-                <Icon name="person" />
-                <strong>23</strong>
-                <span>Years old</span>
-              </div>
-              <div>
-                <Icon name="pin" />
-                <strong>Surat, India</strong>
-                <span>Based in</span>
-              </div>
-            </div>
-          </div>
-        </section>
-        <section id="practice" className="content-section">
-          <SectionHeading label="Practice" title="Current areas." />
-          <p className="section-intro">
-            These are not equal claims of experience. Software is the main area;
-            the others are interests or ongoing studies.
-          </p>
-          <div className="discipline-grid" aria-label="Areas of practice">
-            {disciplines.map((item, index) => (
-              <article
-                id={`practice-${item.title.toLowerCase().replaceAll(" ", "-")}`}
-                className={`discipline-card discipline-${index}`}
-                key={item.title}
-              >
-                <div className="discipline-visual" aria-hidden="true">
-                  {index === 0 ? (
-                    <div className="code-window">
-                      <div className="window-bar">
-                        <i />
-                        <i />
-                        <i />
-                      </div>
-                      <div className="code-lines">
-                        <span>&lt;ideas&gt;</span>
-                        <b>make something.</b>
-                        <b>learn something.</b>
-                        <span>&lt;/ideas&gt;</span>
-                      </div>
-                      <Icon name="code" />
-                    </div>
-                  ) : index === 3 ? (
-                    <Image
-                      src="/digital-sketch.png"
-                      alt=""
-                      fill
-                      sizes="(max-width: 700px) 100vw, 540px"
-                    />
-                  ) : index === 4 ? (
-                    <span className="mandarin-glyph">学</span>
-                  ) : (
-                    <div className="technical-art">
-                      <span />
-                      <span />
-                      <Icon name={item.icon} />
-                    </div>
-                  )}
-                  <span className="visual-index">
-                    0{index + 1} / {item.title.toUpperCase()}
-                  </span>
-                </div>
-                <div className="discipline-body">
-                  <div className="card-title-row">
-                    <h3>{item.title}</h3>
-                    <span
-                      className={`practice-status ${item.status === "Main" ? "main-status" : ""}`}
-                    >
-                      {item.status}
-                    </span>
-                  </div>
-                  <p>{item.description}</p>
-                  {item.title === "Visual work" && (
-                    <button
-                      type="button"
-                      className="text-button"
-                      onClick={isArtMode ? exitArtMode : enterArtMode}
-                    >
-                      {isArtMode ? "Switch to profile" : "Enter Art mode"}
-                      <Icon name="arrow" />
-                    </button>
-                  )}
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
-        <section id="about" className="content-section">
-          <SectionHeading label="About" title="A short background." />
-          <div className="about-layout">
-            <div className="signature-card">
-              <span className="eyebrow">A little about me</span>
-              <Image
-                src="/name-signature.png"
-                alt="Vishwesh Mashruwala, handwritten signature artwork"
-                width={600}
-                height={279}
-              />
-              <span>Surat, India</span>
-            </div>
-            <div className="about-copy">
-              <h3>Vishwesh Mashruwala</h3>
-              <p>
-                I currently work independently and am looking for a software
-                role or contract work. My experience is strongest in software.
-              </p>
-              <p>
-                Hardware, mechanical engineering, and electrical engineering are
-                subjects I&apos;m learning—not claims of expertise. I also draw,
-                edit video, and study Mandarin.
-              </p>
-              <dl className="about-facts">
-                <div>
-                  <dt>Status</dt>
-                  <dd>Self-employed</dd>
-                </div>
-                <div>
-                  <dt>Based</dt>
-                  <dd>Surat, India</dd>
-                </div>
-                <div>
-                  <dt>Age</dt>
-                  <dd>23</dd>
-                </div>
-              </dl>
-            </div>
-          </div>
-        </section>
-        <section
-          className="content-section art-invitation"
-          aria-labelledby="art-invitation-title"
-        >
-          <div>
-            <p className="eyebrow">The other side</p>
-            <h2 id="art-invitation-title">I like making things.</h2>
-            <p>Drawing, video editing, pacing, and composition.</p>
-            {isArtMode ? (
+        {isArtMode ? (
+          <ArtGallery
+            soundtrack={
               <ArtMode
                 playing={isTrackPlaying}
                 currentTime={trackTime}
@@ -564,69 +395,288 @@ export default function Home() {
                 }}
                 onToggleTrack={toggleTrack}
               />
-            ) : (
-              <button className="button" onClick={enterArtMode} type="button">
-                <Icon name="pen" />
-                Enter Art mode
-                <Icon name="arrow" />
-              </button>
-            )}
-          </div>
-          <div className="art-invitation-image" aria-hidden="true">
-            <Image
-              src="/art-cover/portrait-right.png"
-              alt=""
-              fill
-              sizes="(max-width: 700px) 50vw, 360px"
-            />
-          </div>
-        </section>
-        <section id="contact" className="content-section contact-section">
-          <SectionHeading label="Contact" title="Let’s talk." />
-          <div className="contact-layout">
-            <p>
-              I&apos;m open to full-time software roles, contract work, and
-              small collaborations. Email is best; phone and WhatsApp work too.
-            </p>
-            <div className="contact-methods">
-              <a href="mailto:vishweshmash86@gmail.com">
-                <Icon name="mail" />
-                <div>
-                  <span>Email</span>
-                  <strong>vishweshmash86@gmail.com</strong>
+            }
+          />
+        ) : (
+          <>
+            <section id="intro" className="intro-section">
+              <div className="hero-banner">
+                <Image
+                  src="/hero-vm-glass.png"
+                  alt="Blue glass VM monogram, Vishwesh’s original portfolio artwork"
+                  fill
+                  priority
+                  sizes="(max-width: 1200px) 100vw, 1120px"
+                />
+                <span className="banner-note">
+                  A space for the things I make & learn.
+                </span>
+                <LocalClock />
+              </div>
+              <div className="hero-body">
+                <div className="identity-row">
+                  <div className="profile-monogram" aria-hidden="true">
+                    vm<span>.</span>
+                  </div>
+                  <div>
+                    <p className="identity-meta">Software · self-employed</p>
+                    <h1>
+                      Hi, I’m Vishwesh<span> — I like making things.</span>
+                    </h1>
+                  </div>
                 </div>
-                <Icon name="arrow" />
-              </a>
-              <a href="tel:+919537517519">
-                <Icon name="phone" />
-                <div>
-                  <span>Phone</span>
-                  <strong>+91 95375 17519</strong>
+                <p className="hero-disciplines">
+                  Software. Hardware.
+                  <br className="mobile-break" />{" "}
+                  <span>Mechanics. Visuals.</span>
+                </p>
+                <p className="hero-description">
+                  I&apos;m Vishwesh, 23, based in Surat, India. Software is my
+                  main area; the rest are subjects I&apos;m actively learning or
+                  practising.
+                </p>
+                <div className="hero-actions">
+                  <a className="button primary" href="#practice">
+                    <Icon name="code" />
+                    View areas
+                    <Icon name="arrow" />
+                  </a>
+                  <a className="button" href="#contact">
+                    <Icon name="mail" />
+                    Get in touch
+                  </a>
                 </div>
-                <Icon name="arrow" />
-              </a>
-              <a
-                href="https://wa.me/919537517519"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <Icon name="chat" />
-                <div>
-                  <span>WhatsApp</span>
-                  <strong>Open WhatsApp</strong>
+                <div className="contact-icons">
+                  <a
+                    href="mailto:vishweshmash86@gmail.com"
+                    aria-label="Email Vishwesh"
+                  >
+                    <Icon name="mail" />
+                  </a>
+                  <a href="tel:+919537517519" aria-label="Call Vishwesh">
+                    <Icon name="phone" />
+                  </a>
+                  <a
+                    href="https://wa.me/919537517519"
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label="WhatsApp Vishwesh"
+                  >
+                    <Icon name="chat" />
+                  </a>
                 </div>
-                <Icon name="arrow" />
+                <div className="facts-grid">
+                  <div>
+                    <Icon name="code" />
+                    <strong>Software</strong>
+                    <span>Main area</span>
+                  </div>
+                  <div>
+                    <Icon name="briefcase" />
+                    <strong>Independent</strong>
+                    <span>Self-employed</span>
+                  </div>
+                  <div>
+                    <Icon name="person" />
+                    <strong>23</strong>
+                    <span>Years old</span>
+                  </div>
+                  <div>
+                    <Icon name="pin" />
+                    <strong>Surat, India</strong>
+                    <span>Based in</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <section id="practice" className="content-section">
+              <SectionHeading label="Practice" title="Current areas." />
+              <p className="section-intro">
+                These are not equal claims of experience. Software is the main
+                area; the others are interests or ongoing studies.
+              </p>
+              <div className="discipline-grid" aria-label="Areas of practice">
+                {disciplines.map((item, index) => (
+                  <article
+                    id={`practice-${item.title.toLowerCase().replaceAll(" ", "-")}`}
+                    className={`discipline-card discipline-${index}`}
+                    key={item.title}
+                  >
+                    <div className="discipline-visual" aria-hidden="true">
+                      {index === 0 ? (
+                        <div className="code-window">
+                          <div className="window-bar">
+                            <i />
+                            <i />
+                            <i />
+                          </div>
+                          <div className="code-lines">
+                            <span>&lt;ideas&gt;</span>
+                            <b>make something.</b>
+                            <b>learn something.</b>
+                            <span>&lt;/ideas&gt;</span>
+                          </div>
+                          <Icon name="code" />
+                        </div>
+                      ) : index === 3 ? (
+                        <Image
+                          src="/digital-sketch.png"
+                          alt=""
+                          fill
+                          sizes="(max-width: 700px) 100vw, 540px"
+                        />
+                      ) : index === 4 ? (
+                        <span className="mandarin-glyph">学</span>
+                      ) : (
+                        <div className="technical-art">
+                          <span />
+                          <span />
+                          <Icon name={item.icon} />
+                        </div>
+                      )}
+                      <span className="visual-index">
+                        0{index + 1} / {item.title.toUpperCase()}
+                      </span>
+                    </div>
+                    <div className="discipline-body">
+                      <div className="card-title-row">
+                        <h3>{item.title}</h3>
+                        <span
+                          className={`practice-status ${item.status === "Main" ? "main-status" : ""}`}
+                        >
+                          {item.status}
+                        </span>
+                      </div>
+                      <p>{item.description}</p>
+                      {item.title === "Visual work" && (
+                        <button
+                          type="button"
+                          className="text-button"
+                          onClick={isArtMode ? exitArtMode : enterArtMode}
+                        >
+                          {isArtMode ? "Switch to profile" : "Enter Art mode"}
+                          <Icon name="arrow" />
+                        </button>
+                      )}
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+            <section id="about" className="content-section">
+              <SectionHeading label="About" title="A short background." />
+              <div className="about-layout">
+                <div className="signature-card">
+                  <span className="eyebrow">A little about me</span>
+                  <Image
+                    src="/name-signature.png"
+                    alt="Vishwesh Mashruwala, handwritten signature artwork"
+                    width={600}
+                    height={279}
+                  />
+                  <span>Surat, India</span>
+                </div>
+                <div className="about-copy">
+                  <h3>Vishwesh Mashruwala</h3>
+                  <p>
+                    I currently work independently and am looking for a software
+                    role or contract work. My experience is strongest in
+                    software.
+                  </p>
+                  <p>
+                    Hardware, mechanical engineering, and electrical engineering
+                    are subjects I&apos;m learning—not claims of expertise. I
+                    also draw, edit video, and study Mandarin.
+                  </p>
+                  <dl className="about-facts">
+                    <div>
+                      <dt>Status</dt>
+                      <dd>Self-employed</dd>
+                    </div>
+                    <div>
+                      <dt>Based</dt>
+                      <dd>Surat, India</dd>
+                    </div>
+                    <div>
+                      <dt>Age</dt>
+                      <dd>23</dd>
+                    </div>
+                  </dl>
+                </div>
+              </div>
+            </section>
+            <section
+              className="content-section art-invitation"
+              aria-labelledby="art-invitation-title"
+            >
+              <div>
+                <p className="eyebrow">The other side</p>
+                <h2 id="art-invitation-title">I like making things.</h2>
+                <p>Drawing, video editing, pacing, and composition.</p>
+                <button className="button" onClick={enterArtMode} type="button">
+                  <Icon name="pen" />
+                  Enter Art mode
+                  <Icon name="arrow" />
+                </button>
+              </div>
+              <div className="art-invitation-image" aria-hidden="true">
+                <Image
+                  src="/art-cover/portrait-right.png"
+                  alt=""
+                  fill
+                  sizes="(max-width: 700px) 50vw, 360px"
+                />
+              </div>
+            </section>
+            <section id="contact" className="content-section contact-section">
+              <SectionHeading label="Contact" title="Let’s talk." />
+              <div className="contact-layout">
+                <p>
+                  I&apos;m open to full-time software roles, contract work, and
+                  small collaborations. Email is best; phone and WhatsApp work
+                  too.
+                </p>
+                <div className="contact-methods">
+                  <a href="mailto:vishweshmash86@gmail.com">
+                    <Icon name="mail" />
+                    <div>
+                      <span>Email</span>
+                      <strong>vishweshmash86@gmail.com</strong>
+                    </div>
+                    <Icon name="arrow" />
+                  </a>
+                  <a href="tel:+919537517519">
+                    <Icon name="phone" />
+                    <div>
+                      <span>Phone</span>
+                      <strong>+91 95375 17519</strong>
+                    </div>
+                    <Icon name="arrow" />
+                  </a>
+                  <a
+                    href="https://wa.me/919537517519"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <Icon name="chat" />
+                    <div>
+                      <span>WhatsApp</span>
+                      <strong>Open WhatsApp</strong>
+                    </div>
+                    <Icon name="arrow" />
+                  </a>
+                </div>
+              </div>
+            </section>
+            <footer className="portfolio-footer">
+              <a href="#intro" className="footer-name">
+                Vishwesh Mashruwala<span>© {new Date().getFullYear()}</span>
               </a>
-            </div>
-          </div>
-        </section>
-        <footer className="portfolio-footer">
-          <a href="#intro" className="footer-name">
-            Vishwesh Mashruwala<span>© {new Date().getFullYear()}</span>
-          </a>
-          <span>Software. Hardware. Mechanics. Visuals.</span>
-          <a href="#intro">Back to top ↑</a>
-        </footer>
+              <span>Software. Hardware. Mechanics. Visuals.</span>
+              <a href="#intro">Back to top ↑</a>
+            </footer>
+          </>
+        )}
       </main>
       <dialog
         className="search-dialog"
@@ -639,7 +689,9 @@ export default function Home() {
       >
         <div className="search-panel">
           <div className="search-header">
-            <h2 id="search-title">Explore the portfolio</h2>
+            <h2 id="search-title">
+              {isArtMode ? "Explore the artwork" : "Explore the portfolio"}
+            </h2>
             <button
               className="icon-button"
               onClick={() => dialogRef.current?.close()}
@@ -655,7 +707,11 @@ export default function Home() {
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               aria-label="Search portfolio content"
-              placeholder="Search areas, about, art…"
+              placeholder={
+                isArtMode
+                  ? "Search drawings, paintings, 3D…"
+                  : "Search areas, about, art…"
+              }
             />
           </div>
           <div className="search-results">
