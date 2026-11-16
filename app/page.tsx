@@ -13,6 +13,7 @@ const artHashes = [
   "3d-model",
   "video-editing",
   "miscellaneous",
+  "fubuki",
   "paint-study",
   "character-sketch",
   "first-blender-scene",
@@ -268,8 +269,13 @@ export default function Home() {
   }, [exitArtMode, isArtMode, openSearch]);
   const gallerySearchItems = [
     {
+      label: "Fubuki",
+      description: "Black-and-white digital drawing",
+      hash: "fubuki",
+    },
+    {
       label: "Digital art",
-      description: "Drawings and paintings in Krita",
+      description: "Character drawings and paintings",
       hash: "digital-art",
     },
     {

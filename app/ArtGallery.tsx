@@ -12,7 +12,16 @@ const ObjArtwork = dynamic(() => import("./ObjArtwork"), {
 
 const artworks = [
   {
+    id: "fubuki",
+    title: "Fubuki",
+    category: "digital",
+    medium: "Digital art · Black & white",
+    src: "/fubuki.png",
+    alt: "Vishwesh’s black-and-white drawing of Fubuki with short dark hair and a high-neck outfit",
+  },
+  {
     id: "paint-study",
+    category: "digital",
     title: "Character painting",
     medium: "Digital art · Krita",
     src: "/paint-study.png",
@@ -20,6 +29,7 @@ const artworks = [
   },
   {
     id: "character-sketch",
+    category: "digital",
     title: "Character sketches",
     medium: "Digital art · Krita",
     src: "/digital-sketch.png",
@@ -27,6 +37,7 @@ const artworks = [
   },
   {
     id: "first-blender-scene",
+    category: "3d",
     title: "First Blender scene",
     medium: "3D · Blender",
     src: "/first-blend.png",
@@ -63,7 +74,7 @@ export default function ArtGallery({ soundtrack }: { soundtrack: ReactNode }) {
             alt={artwork.alt}
             fill
             sizes="(max-width: 700px) 100vw, 540px"
-            priority={artwork.id === "paint-study"}
+            priority={artwork.id === "fubuki"}
           />
         </div>
         <div className="discipline-body">
@@ -97,7 +108,9 @@ export default function ArtGallery({ soundtrack }: { soundtrack: ReactNode }) {
           <h2>Digital art.</h2>
         </div>
         <div className="discipline-grid">
-          {artworks.slice(0, 2).map(artworkCard)}
+          {artworks
+            .filter((artwork) => artwork.category === "digital")
+            .map(artworkCard)}
         </div>
       </section>
       <section id="3d-model" className="content-section">
@@ -106,7 +119,9 @@ export default function ArtGallery({ soundtrack }: { soundtrack: ReactNode }) {
           <h2>Blender studies.</h2>
         </div>
         <div className="discipline-grid">
-          {artworkCard(artworks[2])}
+          {artworks
+            .filter((artwork) => artwork.category === "3d")
+            .map(artworkCard)}
           <article className="discipline-card artwork-card">
             <div className="gallery-model">
               {modelActive ? (
