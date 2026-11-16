@@ -133,6 +133,9 @@ function SectionHeading({ label, title }: { label: string; title: string }) {
 export default function Home() {
   const [isArtMode, setIsArtMode] = useState(false);
   const [isTrackPlaying, setIsTrackPlaying] = useState(false);
+  const [trackTime, setTrackTime] = useState(0);
+  const [trackDuration, setTrackDuration] = useState(0);
+  const [trackVolume, setTrackVolume] = useState(0.48);
   const [dark, setDark] = useState(false);
   const [query, setQuery] = useState("");
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -199,6 +202,8 @@ export default function Home() {
       track.currentTime = 0;
       track.muted = false;
       track.volume = 0.48;
+      setTrackVolume(0.48);
+      setTrackTime(0);
       void track
         .play()
         .then(() => {
@@ -211,7 +216,7 @@ export default function Home() {
     const track = audioRef.current;
     if (!track) return;
     if (track.paused) {
-      track.volume = 0.48;
+      track.volume = trackVolume;
       void track
         .play()
         .then(() => {
@@ -258,10 +263,28 @@ export default function Home() {
         onPlay={() => setIsTrackPlaying(true)}
         onPause={() => setIsTrackPlaying(false)}
         onError={() => setIsTrackPlaying(false)}
+        onTimeUpdate={(event) => setTrackTime(event.currentTarget.currentTime)}
+        onDurationChange={(event) => {
+          const duration = event.currentTarget.duration;
+          setTrackDuration(Number.isFinite(duration) ? duration : 0);
+        }}
       />
       {isArtMode ? (
         <ArtMode
           playing={isTrackPlaying}
+          currentTime={trackTime}
+          duration={trackDuration}
+          volume={trackVolume}
+          onSeek={(time) => {
+            if (audioRef.current && Number.isFinite(time)) {
+              audioRef.current.currentTime = time;
+              setTrackTime(time);
+            }
+          }}
+          onVolumeChange={(volume) => {
+            if (audioRef.current) audioRef.current.volume = volume;
+            setTrackVolume(volume);
+          }}
           onToggleTrack={toggleTrack}
           onExit={exitArtMode}
         />
