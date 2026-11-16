@@ -35,7 +35,7 @@ input:focus-visible {
   color: #182334;
 }
 
-/* The profile theme is scoped independently of the original Art Mode cover. */
+/* Shared layout and typography for the profile and Art Mode themes. */
 .portfolio {
   --paper: #fcfcfb;
   --surface: #fff;
