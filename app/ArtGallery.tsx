@@ -15,7 +15,6 @@ const artworks = [
     id: "fubuki",
     title: "Fubuki",
     category: "digital",
-    medium: "Digital art · Black & white",
     src: "/fubuki.png",
     alt: "Vishwesh’s black-and-white drawing of Fubuki with short dark hair and a high-neck outfit",
   },
@@ -23,7 +22,6 @@ const artworks = [
     id: "paint-study",
     category: "digital",
     title: "Character painting",
-    medium: "Digital art · Krita",
     src: "/paint-study.png",
     alt: "Vishwesh’s in-progress character painting in Krita",
   },
@@ -31,7 +29,6 @@ const artworks = [
     id: "character-sketch",
     category: "digital",
     title: "Character sketches",
-    medium: "Digital art · Krita",
     src: "/digital-sketch.png",
     alt: "Vishwesh’s earlier character drawing study in Krita",
   },
@@ -39,7 +36,6 @@ const artworks = [
     id: "first-blender-scene",
     category: "3d",
     title: "First Blender scene",
-    medium: "3D · Blender",
     src: "/first-blend.png",
     alt: "Vishwesh’s first Blender scene: a pink tree and small pond on a grassy island",
   },
@@ -77,47 +73,31 @@ export default function ArtGallery({ soundtrack }: { soundtrack: ReactNode }) {
             priority={artwork.id === "fubuki"}
           />
         </div>
-        <div className="discipline-body">
-          <p className="eyebrow">{artwork.medium}</p>
-          <div className="card-title-row">
-            <h3>{artwork.title}</h3>
-            <Icon name="arrow" />
-          </div>
-        </div>
       </button>
     </article>
   );
 
   return (
     <>
-      <section id="art" className="gallery-intro">
-        <div>
-          <div className="section-heading">
-            <p className="eyebrow">VishXDXD · Visual work</p>
-            <h1>Art & studies.</h1>
-          </div>
-          <p className="section-intro">
-            Digital drawings, paintings, and 3D experiments.
-          </p>
-        </div>
+      <section id="art" className="gallery-intro" aria-label="Gallery music">
         <div className="gallery-soundtrack">{soundtrack}</div>
       </section>
-      <section id="digital-art" className="content-section gallery-section">
-        <div className="section-heading">
-          <p className="eyebrow">Drawing & painting</p>
-          <h2>Digital art.</h2>
-        </div>
+      <section
+        id="digital-art"
+        className="content-section gallery-section"
+        aria-label="Digital artwork"
+      >
         <div className="discipline-grid">
           {artworks
             .filter((artwork) => artwork.category === "digital")
             .map(artworkCard)}
         </div>
       </section>
-      <section id="3d-model" className="content-section">
-        <div className="section-heading">
-          <p className="eyebrow">3D work</p>
-          <h2>Blender studies.</h2>
-        </div>
+      <section
+        id="3d-model"
+        className="content-section gallery-section"
+        aria-label="3D artwork"
+      >
         <div className="discipline-grid">
           {artworks
             .filter((artwork) => artwork.category === "3d")
@@ -144,26 +124,16 @@ export default function ArtGallery({ soundtrack }: { soundtrack: ReactNode }) {
                 </>
               )}
             </div>
-            <div className="discipline-body">
-              <p className="eyebrow">Interactive model</p>
-              <div className="card-title-row">
-                <h3>First Blender study</h3>
-              </div>
-            </div>
           </article>
         </div>
       </section>
       <footer className="portfolio-footer">
-        <a href="#art" className="footer-name">
-          VishXDXD<span>© {new Date().getFullYear()}</span>
-        </a>
-        <span>Digital art · 3D</span>
         <a href="#art">Back to top ↑</a>
       </footer>
       <dialog
         className="artwork-viewer"
         ref={viewer}
-        aria-labelledby="artwork-viewer-title"
+        aria-label={selected ? `Artwork: ${selected.title}` : "Artwork viewer"}
         onClick={(event) => {
           if (event.target === event.currentTarget) viewer.current?.close();
         }}
@@ -172,7 +142,6 @@ export default function ArtGallery({ soundtrack }: { soundtrack: ReactNode }) {
         {selected && (
           <>
             <div className="artwork-viewer-header">
-              <h2 id="artwork-viewer-title">{selected.title}</h2>
               <button
                 className="icon-button"
                 aria-label="Close artwork"

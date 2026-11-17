@@ -34,10 +34,6 @@ export default function ArtMode({
     <div className="art-player" aria-label="Art Mode music player">
       <div className="art-track-info">
         <div className="art-track-copy">
-          <p className="art-player-status">
-            {playing ? "Now playing" : "Paused"}
-            <span className="art-loop-label"> / on repeat</span>
-          </p>
           <p className="art-track-title">You weren’t here I really miss you</p>
         </div>
         <button

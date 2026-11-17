@@ -727,7 +727,7 @@ export default function Home() {
                   <button key={item.hash} onClick={enterArtMode}>
                     <div>
                       <strong>{item.label}</strong>
-                      <span>{item.description}</span>
+                      {!isArtMode && <span>{item.description}</span>}
                     </div>
                     <Icon name="arrow" />
                   </button>
@@ -739,7 +739,7 @@ export default function Home() {
                   >
                     <div>
                       <strong>{item.label}</strong>
-                      <span>{item.description}</span>
+                      {!isArtMode && <span>{item.description}</span>}
                     </div>
                     <Icon name="arrow" />
                   </a>

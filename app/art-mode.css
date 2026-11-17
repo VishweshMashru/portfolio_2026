@@ -231,30 +231,28 @@
 }
 
 .gallery-intro {
-  display: grid;
-  grid-template-columns: 1fr 440px;
-  gap: 40px;
-  align-items: center;
   padding: 0 20px;
-}
-.gallery-intro .section-intro {
-  margin-bottom: 0 !important;
 }
 .gallery-soundtrack {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 23px;
-  padding: 18px 22px;
+  padding: 14px 20px;
 }
 .gallery-soundtrack .art-player {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(120px, 1fr) 120px;
+  gap: 24px;
+  align-items: center;
   margin-top: 0;
   max-width: none;
 }
-.gallery-soundtrack .art-volume {
-  margin-top: -6px;
+.gallery-soundtrack .art-volume,
+.gallery-soundtrack .art-timeline {
+  margin-top: 0;
 }
 .gallery-section {
-  margin-top: 65px;
+  margin-top: 25px;
 }
 .artwork-open {
   width: 100%;
@@ -272,18 +270,6 @@
 }
 .artwork-image img {
   object-fit: contain;
-}
-.artwork-card .card-title-row > svg {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-  color: var(--muted);
-}
-.artwork-card .eyebrow {
-  font-size: 10px;
-}
-.artwork-card h3 {
-  font-size: 25px;
 }
 .gallery-model {
   position: relative;
@@ -346,14 +332,9 @@
 }
 .artwork-viewer-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
-  gap: 16px;
   margin-bottom: 16px;
-}
-.artwork-viewer-header h2 {
-  font-size: 22px;
-  letter-spacing: -0.035em;
 }
 .artwork-viewer-image {
   position: relative;
@@ -369,31 +350,37 @@
   margin-top: 16px;
 }
 @media (max-width: 1000px) {
-  .gallery-intro {
-    grid-template-columns: 1fr 360px;
-    gap: 25px;
+  .gallery-soundtrack .art-player {
+    grid-template-columns: minmax(0, 1fr) minmax(120px, 1fr);
+    gap: 8px 20px;
+  }
+  .gallery-soundtrack .art-volume {
+    grid-column: 2;
+    justify-self: end;
   }
 }
 @media (max-width: 700px) {
   .gallery-intro {
-    grid-template-columns: 1fr;
-    gap: 25px;
     padding: 0 5px;
   }
   .gallery-soundtrack {
-    padding: 18px;
+    padding: 14px 18px;
+  }
+  .gallery-soundtrack .art-player {
+    grid-template-columns: minmax(0, 1fr) 100px;
+    gap: 4px 12px;
+  }
+  .gallery-soundtrack .art-track-info {
+    grid-column: 1 / -1;
+  }
+  .gallery-soundtrack .art-volume {
+    width: 100px;
   }
   .gallery-section {
-    margin-top: 50px;
-  }
-  .artwork-card h3 {
-    font-size: 24px;
+    margin-top: 22px;
   }
   .artwork-viewer {
     padding: 16px;
-  }
-  .artwork-viewer-header h2 {
-    font-size: 18px;
   }
 }
 .artwork-open:focus-visible {
