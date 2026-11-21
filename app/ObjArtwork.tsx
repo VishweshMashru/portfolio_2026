@@ -7,7 +7,9 @@ import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
 
 export default function ObjArtwork() {
   const hostRef = useRef<HTMLDivElement | null>(null);
-  const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
+  const [status, setStatus] = useState<"loading" | "ready" | "error">(
+    "loading",
+  );
 
   useEffect(() => {
     const host = hostRef.current;
@@ -18,11 +20,17 @@ export default function ObjArtwork() {
     camera.position.set(5.2, 3.9, 6.6);
     camera.lookAt(0.2, 0, 0);
 
-    const renderer = new THREE.WebGLRenderer({
-      alpha: true,
-      antialias: true,
-      powerPreference: "high-performance",
-    });
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        alpha: true,
+        antialias: true,
+        powerPreference: "high-performance",
+      });
+    } catch {
+      const fallback = requestAnimationFrame(() => setStatus("error"));
+      return () => cancelAnimationFrame(fallback);
+    }
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.08;
@@ -60,7 +68,9 @@ export default function ObjArtwork() {
     let dragging = false;
     let pointerStart = 0;
     let rotationStart = 0;
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
 
     const onModelLoaded = (object: THREE.Group) => {
       if (disposed) return;
@@ -73,7 +83,9 @@ export default function ObjArtwork() {
         if (!(child instanceof THREE.Mesh)) return;
         child.castShadow = true;
         child.receiveShadow = true;
-        const materials = Array.isArray(child.material) ? child.material : [child.material];
+        const materials = Array.isArray(child.material)
+          ? child.material
+          : [child.material];
         materials.forEach((material) => {
           material.transparent = false;
           material.opacity = 1;
@@ -104,7 +116,12 @@ export default function ObjArtwork() {
         materials.preload();
         const objectLoader = new OBJLoader();
         objectLoader.setMaterials(materials);
-        objectLoader.load("/first-study.obj", onModelLoaded, undefined, onLoadError);
+        objectLoader.load(
+          "/first-study.obj",
+          onModelLoaded,
+          undefined,
+          onLoadError,
+        );
       },
       undefined,
       onLoadError,
@@ -124,7 +141,6 @@ export default function ObjArtwork() {
     resize();
 
     const onPointerDown = (event: PointerEvent) => {
-      if (event.pointerType !== "mouse") return;
       dragging = true;
       pointerStart = event.clientX;
       rotationStart = targetRotation;
@@ -145,6 +161,12 @@ export default function ObjArtwork() {
       renderer.domElement.classList.remove("is-dragging");
     };
 
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+      event.preventDefault();
+      targetRotation += event.key === "ArrowLeft" ? -0.25 : 0.25;
+    };
+    host.addEventListener("keydown", onKeyDown);
     renderer.domElement.addEventListener("pointerdown", onPointerDown);
     renderer.domElement.addEventListener("pointermove", onPointerMove);
     renderer.domElement.addEventListener("pointerup", onPointerUp);
@@ -155,7 +177,12 @@ export default function ObjArtwork() {
       const delta = Math.min((time - previousTime) / 1000, 0.04);
       previousTime = time;
       if (!reduceMotion && !dragging && model) targetRotation += delta * 0.08;
-      modelRoot.rotation.y = THREE.MathUtils.damp(modelRoot.rotation.y, targetRotation, 6, delta);
+      modelRoot.rotation.y = THREE.MathUtils.damp(
+        modelRoot.rotation.y,
+        targetRotation,
+        6,
+        delta,
+      );
       renderer.render(scene, camera);
       frame = window.requestAnimationFrame(animate);
     };
@@ -165,6 +192,7 @@ export default function ObjArtwork() {
       disposed = true;
       window.cancelAnimationFrame(frame);
       resizeObserver.disconnect();
+      host.removeEventListener("keydown", onKeyDown);
       renderer.domElement.removeEventListener("pointerdown", onPointerDown);
       renderer.domElement.removeEventListener("pointermove", onPointerMove);
       renderer.domElement.removeEventListener("pointerup", onPointerUp);
@@ -172,7 +200,9 @@ export default function ObjArtwork() {
       modelRoot.traverse((child) => {
         if (!(child instanceof THREE.Mesh)) return;
         child.geometry.dispose();
-        const materials = Array.isArray(child.material) ? child.material : [child.material];
+        const materials = Array.isArray(child.material)
+          ? child.material
+          : [child.material];
         materials.forEach((material) => material.dispose());
       });
       renderer.dispose();
@@ -182,17 +212,20 @@ export default function ObjArtwork() {
 
   return (
     <div className="obj-artwork-shell">
-      {status === "error" && <div className="obj-artwork-fallback" aria-hidden="true" />}
+      {status === "error" && (
+        <div className="obj-artwork-fallback" aria-hidden="true" />
+      )}
       <div
         ref={hostRef}
         className="obj-artwork"
-        role="img"
-        aria-label="Interactive rendering of Vishwesh's first Blender study"
+        role="group"
+        tabIndex={0}
+        aria-label="Interactive rendering of Vishwesh's first Blender study. Drag or use left and right arrow keys to rotate."
       />
       <p className={`obj-artwork-status is-${status}`} aria-live="polite">
         {status === "loading" && "Loading model…"}
-        {status === "ready" && "Drag to rotate"}
-        {status === "error" && "Model unavailable"}
+        {status === "ready" && "Drag or use ← → to rotate"}
+        {status === "error" && "3D unavailable — showing the original render"}
       </p>
     </div>
   );

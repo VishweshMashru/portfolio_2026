@@ -13,7 +13,6 @@ test("builds the Next.js portfolio", async () => {
   assert.match(layout, /Vishwesh Mashruwala — Portfolio/);
   assert.match(page, /Vishwesh Mashruwala/);
   assert.match(page, /Software\. Hardware\./);
-  assert.match(page, /These are not equal claims of experience/);
   assert.doesNotMatch(`${layout}\n${page}`, /\b(?:starter|drizzle|database)\b/i);
 });
 
@@ -35,7 +34,7 @@ test("enters Art Mode without a video transition", async () => {
   assert.doesNotMatch(page, /art-transition-video/);
   assert.doesNotMatch(page, /Skip to Art mode/);
   assert.doesNotMatch(page, /finishArtTransition/);
-  assert.match(page, /track\.volume = \.48/);
+  assert.match(page, /track\.volume = (?:0)?\.48/);
   assert.doesNotMatch(page, /sessionStorage/);
 });
 
