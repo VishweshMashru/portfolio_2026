@@ -15,8 +15,6 @@ const artHashes = [
   "video-editing",
   "miscellaneous",
   "fubuki",
-  "paint-study",
-  "character-sketch",
   "first-blender-scene",
 ];
 const themePreferenceKey = "vishwesh-portfolio-theme";
@@ -159,7 +157,11 @@ export default function Home() {
 
   useEffect(() => {
     const syncHash = (initial = false) => {
-      const hash = window.location.hash.slice(1);
+      let hash = window.location.hash.slice(1);
+      if (["paint-study", "character-sketch"].includes(hash)) {
+        hash = "digital-art";
+        window.history.replaceState(null, "", "#digital-art");
+      }
       const profileLink =
         ["intro", "practice", "about", "contact"].includes(hash) ||
         hash.startsWith("practice-");
@@ -281,22 +283,12 @@ export default function Home() {
     },
     {
       label: "Digital art",
-      description: "Character drawings and paintings",
+      description: "Fubuki",
       hash: "digital-art",
     },
     {
-      label: "Character painting",
-      description: "Digital painting study",
-      hash: "paint-study",
-    },
-    {
-      label: "Character sketches",
-      description: "Earlier character drawing study",
-      hash: "character-sketch",
-    },
-    {
       label: "Blender studies",
-      description: "First Blender scene and interactive model",
+      description: "JapRes and first Blender scene",
       hash: "3d-model",
     },
   ];
@@ -532,7 +524,7 @@ export default function Home() {
                         </div>
                       ) : index === 3 ? (
                         <Image
-                          src="/digital-sketch.png"
+                          src="/fubuki.png"
                           alt=""
                           fill
                           sizes="(max-width: 700px) 100vw, 540px"
