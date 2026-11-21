@@ -393,3 +393,96 @@
 .obj-artwork canvas {
   touch-action: pan-y;
 }
+
+.japres-stage {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  max-height: 760px;
+}
+.japres-stage > img {
+  object-fit: cover;
+}
+.japres-stage:hover {
+  transform: none;
+}
+.japres-actions {
+  position: absolute;
+  bottom: 22px;
+  right: 22px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.japres-actions > .button,
+.japres-actions > .icon-button,
+.japres-tools > .icon-button {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  box-shadow: 0 4px 20px #1d142a20;
+}
+.japres-actions > .icon-button,
+.japres-tools > .icon-button {
+  width: 44px;
+  height: 44px;
+}
+.japres-interactive {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 70% 10%, #414f88, #29203c 90%);
+}
+.japres-interactive.is-error {
+  background: transparent;
+}
+.japres-interactive.is-error .japres-canvas {
+  visibility: hidden;
+}
+.japres-canvas {
+  position: absolute;
+  inset: 0;
+}
+.japres-canvas canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.japres-canvas:focus-visible {
+  outline: 2px solid #f4b9dc;
+  outline-offset: -5px;
+}
+.japres-tools {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  display: flex;
+  gap: 8px;
+}
+.japres-status {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  right: 16px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  text-align: center;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 13px;
+}
+@media (max-width: 700px) {
+  .japres-stage {
+    aspect-ratio: 1;
+  }
+  .japres-stage > img {
+    object-fit: contain;
+    background: #302747;
+  }
+  .japres-actions {
+    bottom: 12px;
+    right: 12px;
+  }
+  .japres-tools {
+    top: 12px;
+    right: 12px;
+  }
+}

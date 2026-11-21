@@ -9,6 +9,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 // Keep the original Art Mode preference and all retired gallery bookmarks.
 const artHashes = [
   "art",
+  "japres",
   "digital-art",
   "3d-model",
   "video-editing",
@@ -268,6 +269,11 @@ export default function Home() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [exitArtMode, isArtMode, openSearch]);
   const gallerySearchItems = [
+    {
+      label: "JapRes",
+      description: "Neon ramen shop · Blender scene · interactive 3D",
+      hash: "japres",
+    },
     {
       label: "Fubuki",
       description: "Black-and-white digital drawing",

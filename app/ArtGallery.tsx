@@ -10,7 +10,23 @@ const ObjArtwork = dynamic(() => import("./ObjArtwork"), {
   loading: () => <p className="obj-artwork-status">Loading model…</p>,
 });
 
+const JapResScene = dynamic(() => import("./JapResScene"), {
+  ssr: false,
+  loading: () => (
+    <p className="japres-status" role="status">
+      Loading scene…
+    </p>
+  ),
+});
+
 const artworks = [
+  {
+    id: "japres",
+    title: "JapRes",
+    category: "scene",
+    src: "/japres.png",
+    alt: "Vishwesh’s JapRes Blender scene: a neon ramen shop with a red bowl on the roof",
+  },
   {
     id: "fubuki",
     title: "Fubuki",
@@ -46,6 +62,8 @@ export default function ArtGallery({ soundtrack }: { soundtrack: ReactNode }) {
     null,
   );
   const [modelActive, setModelActive] = useState(false);
+  const [japResActive, setJapResActive] = useState(false);
+  const japResTrigger = useRef<HTMLButtonElement | null>(null);
   const viewer = useRef<HTMLDialogElement | null>(null);
   const opener = useRef<HTMLButtonElement | null>(null);
 
@@ -70,7 +88,7 @@ export default function ArtGallery({ soundtrack }: { soundtrack: ReactNode }) {
             alt={artwork.alt}
             fill
             sizes="(max-width: 700px) 100vw, 540px"
-            priority={artwork.id === "fubuki"}
+            loading="lazy"
           />
         </div>
       </button>
@@ -81,6 +99,55 @@ export default function ArtGallery({ soundtrack }: { soundtrack: ReactNode }) {
     <>
       <section id="art" className="gallery-intro" aria-label="Gallery music">
         <div className="gallery-soundtrack">{soundtrack}</div>
+      </section>
+      <section
+        id="japres"
+        className="content-section gallery-section"
+        aria-label="JapRes Blender scene"
+      >
+        <div className="discipline-card japres-stage">
+          <Image
+            src="/japres.png"
+            alt="Vishwesh’s JapRes scene: a neon ramen shop topped with a red bowl"
+            fill
+            priority
+            sizes="(max-width: 1200px) 100vw, 1080px"
+          />
+          {japResActive ? (
+            <JapResScene
+              onClose={() => {
+                setJapResActive(false);
+                requestAnimationFrame(() =>
+                  japResTrigger.current?.focus({ preventScroll: true }),
+                );
+              }}
+            />
+          ) : (
+            <div className="japres-actions">
+              <button
+                ref={japResTrigger}
+                className="button"
+                onClick={() => setJapResActive(true)}
+                aria-label="Explore JapRes in 3D"
+              >
+                <Icon name="gear" />
+                Explore in 3D
+              </button>
+              <button
+                className="icon-button"
+                aria-label="View JapRes render"
+                title="View render"
+                onClick={(event) => {
+                  opener.current = event.currentTarget;
+                  setSelected(artworks[0]);
+                  viewer.current?.showModal();
+                }}
+              >
+                <Icon name="arrow" />
+              </button>
+            </div>
+          )}
+        </div>
       </section>
       <section
         id="digital-art"
