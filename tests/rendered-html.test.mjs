@@ -13,7 +13,6 @@ test("builds the Next.js portfolio", async () => {
   assert.match(layout, /Vishwesh Mashruwala — Portfolio/);
   assert.match(page, /Vishwesh Mashruwala/);
   assert.match(page, /Software\. Hardware\./);
-  assert.match(page, /These are not equal claims of experience/);
   assert.doesNotMatch(`${layout}\n${page}`, /\b(?:starter|drizzle|database)\b/i);
 });
 

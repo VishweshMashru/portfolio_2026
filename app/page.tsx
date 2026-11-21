@@ -412,9 +412,6 @@ export default function Home() {
                   priority
                   sizes="(max-width: 1200px) 100vw, 1120px"
                 />
-                <span className="banner-note">
-                  A space for the things I make & learn.
-                </span>
                 <LocalClock />
               </div>
               <div className="hero-body">
@@ -433,11 +430,6 @@ export default function Home() {
                   Software. Hardware.
                   <br className="mobile-break" />{" "}
                   <span>Mechanics. Visuals.</span>
-                </p>
-                <p className="hero-description">
-                  I&apos;m Vishwesh, 23, based in Surat, India. Software is my
-                  main area; the rest are subjects I&apos;m actively learning or
-                  practising.
                 </p>
                 <div className="hero-actions">
                   <a className="button primary" href="#practice">
@@ -495,10 +487,6 @@ export default function Home() {
             </section>
             <section id="practice" className="content-section">
               <SectionHeading label="Practice" title="Current areas." />
-              <p className="section-intro">
-                These are not equal claims of experience. Software is the main
-                area; the others are interests or ongoing studies.
-              </p>
               <div className="discipline-grid" aria-label="Areas of practice">
                 {disciplines.map((item, index) => (
                   <article
@@ -571,7 +559,6 @@ export default function Home() {
               <SectionHeading label="About" title="A short background." />
               <div className="about-layout">
                 <div className="signature-card">
-                  <span className="eyebrow">A little about me</span>
                   <Image
                     src="/name-signature.png"
                     alt="Vishwesh Mashruwala, handwritten signature artwork"
@@ -583,14 +570,8 @@ export default function Home() {
                 <div className="about-copy">
                   <h3>Vishwesh Mashruwala</h3>
                   <p>
-                    I currently work independently and am looking for a software
-                    role or contract work. My experience is strongest in
-                    software.
-                  </p>
-                  <p>
-                    Hardware, mechanical engineering, and electrical engineering
-                    are subjects I&apos;m learning—not claims of expertise. I
-                    also draw, edit video, and study Mandarin.
+                    I work independently in software. I also draw, edit video,
+                    and study Mandarin.
                   </p>
                   <dl className="about-facts">
                     <div>
@@ -614,9 +595,7 @@ export default function Home() {
               aria-labelledby="art-invitation-title"
             >
               <div>
-                <p className="eyebrow">The other side</p>
                 <h2 id="art-invitation-title">I like making things.</h2>
-                <p>Drawing, video editing, pacing, and composition.</p>
                 <button className="button" onClick={enterArtMode} type="button">
                   <Icon name="pen" />
                   Enter Art mode
@@ -635,11 +614,6 @@ export default function Home() {
             <section id="contact" className="content-section contact-section">
               <SectionHeading label="Contact" title="Let’s talk." />
               <div className="contact-layout">
-                <p>
-                  I&apos;m open to full-time software roles, contract work, and
-                  small collaborations. Email is best; phone and WhatsApp work
-                  too.
-                </p>
                 <div className="contact-methods">
                   <a href="mailto:vishweshmash86@gmail.com">
                     <Icon name="mail" />
